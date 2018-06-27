@@ -1,0 +1,58 @@
+<div id="oyst-1click-button"  data-smart='true'></div>
+
+<script>
+
+    window.__OYST__ = window.__OYST__ || {};
+    window.__OYST__.baseUrl = 'http://ccc4188b.ngrok.io/index.php/';
+    window.__OYST__.preload = true;
+    window.addEventListener('message', function (event) {
+        if(event.data.type == 'ORDER_READY') {
+            window.__OYST__.preload = false;
+        }
+    });
+    window.__OYST__.getOneClickURL = function (cb, opts) {
+        ready(function () {
+            if(window.__OYST__.preload) {
+                cb(null, "https:\/\/oneclick.sandbox.oyst.eu\/?isCheckoutCart=true");
+            } else {
+                var form = new FormData(document.querySelector('form#product_addtocart_form'));
+
+                var settings = {
+                    async: true,
+                    cacheControl: "no-cache",
+                    data: form,
+                    method: "POST",
+                    mimeType: "multipart/form-data",
+                    url: window.__OYST__.baseUrl+'oyst_oneclick\/init\/addtocart'
+                };
+
+                var xhr = new XMLHttpRequest();
+                xhr.open(settings.method, settings.url, settings.async);
+                xhr.setRequestHeader("cache-control", settings.cacheControl);
+                xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+                xhr.onload = function () {
+                    if (200 === xhr.status) {
+                        //console.log(xhr.responseText);
+                        require(['Magento_Customer/js/customer-data'], function(customerData) {
+                            customerData.reload(['cart']);
+                        });
+                    }
+                };
+                xhr.send(form);
+            }
+        });
+    };
+
+
+
+function ready(fn) {
+    if (document.attachEvent ? "complete" === document.readyState : "loading" !== document.readyState) {
+        fn();
+    } else {
+        document.addEventListener("DOMContentLoaded", fn);
+    }
+}
+
+</script>
+
+<script src="https://cdn.sandbox.oyst.eu/1click/script/script.min.js"></script>

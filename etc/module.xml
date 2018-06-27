@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+  This file is part of Oyst_OneClick for Magento 2.
+ 
+  @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
+  @author Oyst <plugin@oyst.com> <@oyst>
+  @category Oyst
+  @package Oyst_OneClick
+  @copyright Copyright (c) 2018 Oyst (http://www.oyst.com)
+-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
+    <module name="Oyst_OneClick" setup_version="1.0.0">
+    </module>
+</config>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+
+    <route url="/V1/oyst-oneclick/checkout/:oystId" method="PUT">
+        <service class="Oyst\OneClick\Api\OystCheckoutManagementInterface" method="syncMagentoQuoteWithOystCheckout"/>
+        <resources>
+            <resource ref="Oyst_OneClick::checkout" />
+        </resources>
+    </route>
+
+    <route url="/V1/oyst-oneclick/checkout/:id" method="GET">
+        <service class="Oyst\OneClick\Api\OystCheckoutManagementInterface" method="getOystCheckoutFromMagentoQuote"/>
+        <resources>
+            <resource ref="Oyst_OneClick::checkout" />
+        </resources>
+    </route>
+
+</routes>

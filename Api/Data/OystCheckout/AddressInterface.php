@@ -6,7 +6,7 @@ namespace Oyst\OneClick\Api\Data\OystCheckout;
  * Interface AddressInterface
  * @api
  */
-interface AddressInterface 
+interface AddressInterface
 {
     /**#@+
      * Constants defined for keys of array, makes typos less likely
@@ -20,6 +20,7 @@ interface AddressInterface
     const STREET1 = 'street1';
     const STREET2 = 'street2';
     const POSTCODE = 'postcode';
+    const CITY = 'city';
     const COUNTRY = 'country';
     const PHONE = 'phone';
     const PHONE_MOBILE = 'phone_mobile';
@@ -116,6 +117,17 @@ interface AddressInterface
      * @return $this
      */
     public function setPostcode($postcode);
+
+    /**
+     * @return string
+     */
+    public function getCity();
+
+    /**
+     * @param string $city
+     * @return $this
+     */
+    public function setCity($city);
 
     /**
      * @return \Oyst\OneClick\Api\Data\OystCheckout\CountryInterface

@@ -13,8 +13,8 @@ interface ShippingInterface
      */
 
     const ADDRESS = 'address';
-    const CARRIERS_AVAILABLE = 'carriers_available';
-    const CARRIER_USED = 'carrier_used';
+    const METHODS_AVAILABLE = 'methods_available';
+    const METHOD_USED = 'method_used';
 
     /**#@-*/
 
@@ -30,24 +30,24 @@ interface ShippingInterface
     public function setAddress($address);
     
     /**
-     * @return \Oyst\OneClick\Api\Data\OystCheckout\CarrierInterface|null
+     * @return \Oyst\OneClick\Api\Data\OystCheckout\ShippingMethodInterface[]|null
      */
-    public function getCarriersAvailable();
+    public function getMethodsAvailable();
 
     /**
-     * @param \Oyst\OneClick\Api\Data\OystCheckout\CarrierInterface $carriersAvailable
+     * @param \Oyst\OneClick\Api\Data\OystCheckout\ShippingMethodInterface[] $methodsAvailable
      * @return $this
      */
-    public function setCarriersAvailable($carriersAvailable);
+    public function setMethodsAvailable($methodsAvailable);
     
     /**
-     * @return \Oyst\OneClick\Api\Data\OystCheckout\CarrierInterface
+     * @return \Oyst\OneClick\Api\Data\OystCheckout\ShippingMethodInterface
      */
-    public function getCarrierUsed();
+    public function getMethodUsed();
 
     /**
-     * @param \Oyst\OneClick\Api\Data\OystCheckout\CarrierInterface $carrierUsed
+     * @param \Oyst\OneClick\Api\Data\OystCheckout\ShippingMethodInterface $methodUsed
      * @return $this
      */
-    public function setCarrierUsed($carrierUsed);
+    public function setMethodUsed($methodUsed);
 }

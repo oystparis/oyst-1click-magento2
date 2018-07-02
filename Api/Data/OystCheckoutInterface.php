@@ -12,18 +12,19 @@ interface OystCheckoutInterface
      * Constants defined for keys of array, makes typos less likely
      */
 
-    const ID_OYST = 'id_oyst';
+    const OYST_ID = 'oyst_id';
+    const INTERNAL_ID = 'internal_id';
     const IP = 'ip';
     const USER = 'user';
     const ITEMS = 'items';
-    const PROPOSAL_ITEMS = 'proposal_items';
-    const PACKAGES = 'packages';
-    const PROMOTIONS = 'promotions';
+    const DISCOUNTS = 'discounts';
+    const COUPONS = 'coupons';
+    const USER_ADVANTAGES = 'user_advantages';
     const SHIPPING = 'shipping';
     const BILLING = 'billing';
     const SHOP = 'shop';
     const MESSAGES = 'messages';
-    const CHECKOUT_AGREEMENTS = 'checkout_agreements';
+    const AGREEMENTS = 'agreements';
     const CURRENCY = 'currency';
     const TOTALS = 'totals';
     const CONTEXT = 'context';
@@ -31,15 +32,26 @@ interface OystCheckoutInterface
     /**#@-*/
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getIdOyst();
+    public function getOystId();
 
     /**
-     * @param string $idOyst
+     * @param string $oystId
      * @return $this
      */
-    public function setIdOyst($idOyst);
+    public function setOystId($oystId);
+
+    /**
+     * @return string
+     */
+    public function getInternalId();
+
+    /**
+     * @param string $internalId
+     * @return $this
+     */
+    public function setInternalId($internalId);
 
     /**
      * @return string
@@ -75,37 +87,37 @@ interface OystCheckoutInterface
     public function setItems($items);
 
     /**
-     * @return \Oyst\OneClick\Api\Data\OystCheckout\ItemInterface[]|null
+     * @return \Oyst\OneClick\Api\Data\OystCheckout\DiscountInterface[]|null
      */
-    public function getProposalItems();
+    public function getDiscounts();
 
     /**
-     * @param \Oyst\OneClick\Api\Data\OystCheckout\ItemInterface[] $proposalItems
+     * @param \Oyst\OneClick\Api\Data\OystCheckout\DiscountInterface[] $discounts
      * @return $this
      */
-    public function setProposalItems($proposalItems);
+    public function setDiscounts($discounts);
 
     /**
-     * @return \Oyst\OneClick\Api\Data\OystCheckout\ItemInterface[]|null
+     * @return \Oyst\OneClick\Api\Data\OystCheckout\CouponInterface[]|null
      */
-    public function getPackages();
+    public function getCoupons();
 
     /**
-     * @param \Oyst\OneClick\Api\Data\OystCheckout\ItemInterface[] $packages
+     * @param \Oyst\OneClick\Api\Data\OystCheckout\CouponInterface[] $coupons
      * @return $this
      */
-    public function setPackages($packages);
+    public function setCoupons($coupons);
 
     /**
-     * @return \Oyst\OneClick\Api\Data\OystCheckout\PromotionsInterface[]|null
+     * @return \Oyst\OneClick\Api\Data\OystCheckout\UserAdvantagesInterface[]|null
      */
-    public function getPromotions();
+    public function getUserAdvantages();
 
     /**
-     * @param \Oyst\OneClick\Api\Data\OystCheckout\PromotionsInterface[] $promotions
+     * @param \Oyst\OneClick\Api\Data\OystCheckout\UserAdvantagesInterface[] $userAdvantages
      * @return $this
      */
-    public function setPromotions($promotions);
+    public function setUserAdvantages($userAdvantages);
 
     /**
      * @return \Oyst\OneClick\Api\Data\OystCheckout\ShippingInterface
@@ -152,15 +164,15 @@ interface OystCheckoutInterface
     public function setMessages($messages);
 
     /**
-     * @return \Oyst\OneClick\Api\Data\OystCheckout\CheckoutAgreementsInterface[]|null
+     * @return \Oyst\OneClick\Api\Data\OystCheckout\CheckoutAgreementInterface[]|null
      */
-    public function getCheckoutAgreements();
+    public function getAgreements();
 
     /**
-     * @param \Oyst\OneClick\Api\Data\OystCheckout\CheckoutAgreementsInterface[] $checkoutAgreements
+     * @param \Oyst\OneClick\Api\Data\OystCheckout\CheckoutAgreementInterface[] $agreements
      * @return $this
      */
-    public function setCheckoutAgreements($checkoutAgreements);
+    public function setAgreements($agreements);
 
     /**
      * @return string
@@ -174,12 +186,12 @@ interface OystCheckoutInterface
     public function setCurrency($currency);
 
     /**
-     * @return \Oyst\OneClick\Api\Data\OystCheckout\TotalsInterface[]
+     * @return \Oyst\OneClick\Api\Data\OystCheckout\TotalsInterface
      */
     public function getTotals();
 
     /**
-     * @param \Oyst\OneClick\Api\Data\OystCheckout\TotalsInterface[] $totals
+     * @param \Oyst\OneClick\Api\Data\OystCheckout\TotalsInterface $totals
      * @return $this
      */
     public function setTotals($totals);
@@ -194,21 +206,4 @@ interface OystCheckoutInterface
      * @return $this
      */
     public function setContext($context);
-    
-    /**
-     * Retrieve existing extension attributes object or create a new one.
-     *
-     * @return \Oyst\OneClick\Api\Data\OystCheckoutExtensionInterface|null
-     */
-    public function getExtensionAttributes();
-
-    /**
-     * Set an extension attributes object.
-     *
-     * @param \Oyst\OneClick\Api\Data\OystCheckoutExtensionInterface $extensionAttributes
-     * @return $this
-     */
-    public function setExtensionAttributes(
-        \Oyst\OneClick\Api\Data\OystCheckoutExtensionInterface $extensionAttributes
-    );
 }

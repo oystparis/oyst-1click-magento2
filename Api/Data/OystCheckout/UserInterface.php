@@ -12,7 +12,7 @@ interface UserInterface
      * Constants defined for keys of array, makes typos less likely
      */
 
-    const ID_OYST = 'id_oyst';
+    const OYST_ID = 'oyst_id';
     const LASTNAME = 'lastname';
     const FIRSTNAME = 'firstname';
     const EMAIL = 'email';
@@ -26,15 +26,15 @@ interface UserInterface
     /**#@-*/
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getIdOyst();
+    public function getOystId();
 
     /**
-     * @param string $idOyst
+     * @param string $oystId
      * @return $this
      */
-    public function setIdOyst($idOyst);
+    public function setOystId($oystId);
 
     /**
      * @return string

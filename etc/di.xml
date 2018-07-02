@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Oyst\OneClick\Api\Data\OystCheckoutInterface" type="Oyst\OneClick\Model\Data\OystCheckout"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\AddressInterface" type="Oyst\OneClick\Model\Data\OystCheckout\Address"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\AgreementInterface" type="Oyst\OneClick\Model\Data\OystCheckout\Agreement"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\BillingInterface" type="Oyst\OneClick\Model\Data\OystCheckout\Billing"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\CountryInterface" type="Oyst\OneClick\Model\Data\OystCheckout\Country"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\CounponInterface" type="Oyst\OneClick\Model\Data\OystCheckout\Coupon"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\DiscountInterface" type="Oyst\OneClick\Model\Data\OystCheckout\Discount"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\ItemInterface" type="Oyst\OneClick\Model\Data\OystCheckout\Item"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\ItemPriceInterface" type="Oyst\OneClick\Model\Data\OystCheckout\ItemPrice"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\ItemAttributeInterface" type="Oyst\OneClick\Model\Data\OystCheckout\ItemAttribute"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\KeyValueInterface" type="Oyst\OneClick\Model\Data\OystCheckout\KeyValue"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\MessageInterface" type="Oyst\OneClick\Model\Data\OystCheckout\Message"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\ShippingInterface" type="Oyst\OneClick\Model\Data\OystCheckout\Shipping"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\ShippingMethodInterface" type="Oyst\OneClick\Model\Data\OystCheckout\ShippingMethod"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\ShopInterface" type="Oyst\OneClick\Model\Data\OystCheckout\Shop"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\TotalDetailsInterface" type="Oyst\OneClick\Model\Data\OystCheckout\TotalDetails"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\TotalTaxInterface" type="Oyst\OneClick\Model\Data\OystCheckout\TotalTax"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\TotalsInterface" type="Oyst\OneClick\Model\Data\OystCheckout\Totals"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\UserInterface" type="Oyst\OneClick\Model\Data\OystCheckout\User"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\UserAdvantagesInterface" type="Oyst\OneClick\Model\Data\OystCheckout\UserAdvantages"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\UserAdvantagesBalanceInterface" type="Oyst\OneClick\Model\Data\OystCheckout\UserAdvantagesBalance"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\UserAdvantagesFidelityPointInterface" type="Oyst\OneClick\Model\Data\OystCheckout\UserAdvantagesFidelityPoint"/>
+
+    <preference for="Oyst\OneClick\Api\OystCheckoutManagementInterface" type="Oyst\OneClick\Model\OystCheckoutManagement"/>
+</config>

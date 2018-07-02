@@ -18,12 +18,11 @@ interface ItemPriceInterface
     const WITHOUT_DISCOUNT_TAX_INCL = 'without_discount_tax_incl';
     const TOTAL_TAX_EXCL = 'total_tax_excl';
     const TOTAL_TAX_INCL = 'total_tax_incl';
-    const DISCOUNT_TAX_INCL = 'discount_tax_incl';
 
     /**#@-*/
 
     /**
-     * @return float
+     * @return float|null
      */
     public function getTaxExcl();
 
@@ -34,7 +33,7 @@ interface ItemPriceInterface
     public function setTaxExcl($taxExcl);
 
     /**
-     * @return float
+     * @return float|null
      */
     public function getTaxIncl();
 
@@ -45,7 +44,7 @@ interface ItemPriceInterface
     public function setTaxIncl($taxIncl);
 
     /**
-     * @return float
+     * @return float|null
      */
     public function getWithoutDiscountTaxExcl();
 
@@ -56,7 +55,7 @@ interface ItemPriceInterface
     public function setWithoutDiscountTaxExcl($withoutDiscountTaxExcl);
 
     /**
-     * @return float
+     * @return float|null
      */
     public function getWithoutDiscountTaxIncl();
 
@@ -67,7 +66,7 @@ interface ItemPriceInterface
     public function setWithoutDiscountTaxIncl($withoutDiscountTaxIncl);
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getTotalTaxExcl();
 
@@ -78,7 +77,7 @@ interface ItemPriceInterface
     public function setTotalTaxExcl($totalTaxExcl);
 
     /**
-     * @return float
+     * @return float|null
      */
     public function getTotalTaxIncl();
 
@@ -87,15 +86,4 @@ interface ItemPriceInterface
      * @return $this
      */
     public function setTotalTaxIncl($totalTaxIncl);
-
-    /**
-     * @return float
-     */
-    public function getDiscountTaxIncl();
-
-    /**
-     * @param float $discountTaxIncl
-     * @return $this
-     */
-    public function setDiscountTaxIncl($discountTaxIncl);    
 }

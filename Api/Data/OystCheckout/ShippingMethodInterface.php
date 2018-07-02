@@ -3,10 +3,10 @@
 namespace Oyst\OneClick\Api\Data\OystCheckout;
 
 /**
- * Interface CarrierInterface
+ * Interface ShippingMethodInterface
  * @api
  */
-interface CarrierInterface
+interface ShippingMethodInterface
 {
     /**#@+
      * Constants defined for keys of array, makes typos less likely
@@ -15,6 +15,8 @@ interface CarrierInterface
     const REFERENCE = 'reference';
     const LABEL = 'label';
     const DELIVERY_DELAY = 'delivery_delay';
+    const AMOUNT_TAX_EXCL = 'amount_tax_excl';
+    const AMOUNT_TAX_INCL = 'amount_tax_incl';
 
     /**#@-*/
 
@@ -50,4 +52,26 @@ interface CarrierInterface
      * @return $this
      */
     public function setDeliveryDelay($deliveryDelay);
+
+    /**
+     * @return float
+     */
+    public function getAmountTaxExcl();
+
+    /**
+     * @param float $amountTaxExcl
+     * @return $this
+     */
+    public function setAmountTaxExcl($amountTaxExcl);
+
+    /**
+     * @return float
+     */
+    public function getAmountTaxIncl();
+
+    /**
+     * @param float $amountTaxIncl
+     * @return $this
+     */
+    public function setAmountTaxIncl($amountTaxIncl);
 }

@@ -3,7 +3,7 @@
 namespace Oyst\OneClick\Api\Data\OystCheckout;
 
 /**
- * Interface TotalDetailInterface
+ * Interface TotalDetailsInterface
  * @api
  */
 interface TotalDetailsInterface
@@ -20,7 +20,7 @@ interface TotalDetailsInterface
     /**#@-*/
 
     /**
-     * @return float
+     * @return float|null
      */
     public function getTotalItems();
 
@@ -31,7 +31,7 @@ interface TotalDetailsInterface
     public function setTotalItems($totalItems);
 
     /**
-     * @return float
+     * @return float|null
      */
     public function getTotalShipping();
 
@@ -42,7 +42,7 @@ interface TotalDetailsInterface
     public function setTotalShipping($totalShipping);
 
     /**
-     * @return float
+     * @return float|null
      */
     public function getTotalDiscount();
 
@@ -53,7 +53,7 @@ interface TotalDetailsInterface
     public function setTotalDiscount($totalDiscount);
 
     /**
-     * @return float
+     * @return float|null
      */
     public function getTotal();
 

@@ -13,8 +13,8 @@ interface ItemInterface
      */
 
     const REFERENCE = 'reference';
-    const REFERENCE_PARENT = 'reference_parent';
-    const REFERENCE_PACKAGE = 'reference_package';
+    const INTERNAL_REFERENCE = 'internal_reference';
+    const ALIAS = 'alias';
     const NAME = 'name';
     const TYPE = 'type';
     const DESCRIPTION_SHORT = 'description_short';
@@ -33,6 +33,10 @@ interface ItemInterface
     const TAX_NAME = 'tax_name';
     const IMAGE = 'image';
     const PRICE = 'price';
+    const DISCOUNTS = 'discounts';
+    const CHILD_ITEMS = 'child_items';
+    const OYST_DISPLAY = 'oyst_display';
+    const USER_INPUT = 'user_input';
 
     /**#@-*/
 
@@ -48,26 +52,15 @@ interface ItemInterface
     public function setReference($reference);
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getReferenceParent();
+    public function getInternalReference();
 
     /**
-     * @param string $referenceParent
+     * @param string $internalReference
      * @return $this
      */
-    public function setReferenceParent($referenceParent);
-
-    /**
-     * @return string|null
-     */
-    public function getReferencePackage();
-
-    /**
-     * @param string $referencePackage
-     * @return $this
-     */
-    public function setReferencePackage($referencePackage);
+    public function setInternalReference($internalReference);
 
     /**
      * @return string
@@ -79,6 +72,17 @@ interface ItemInterface
      * @return $this
      */
     public function setName($name);
+    
+    /**
+     * @return string
+     */
+    public function getAlias();
+
+    /**
+     * @param string $alias
+     * @return $this
+     */
+    public function setAlias($alias);
 
     /**
      * @return string
@@ -266,4 +270,48 @@ interface ItemInterface
      * @return $this
      */
     public function setImage($image);
+    
+    /**
+     * @return \Oyst\OneClick\Api\Data\OystCheckout\DiscountInterface[]|null
+     */
+    public function getDiscounts();
+
+    /**
+     * @param \Oyst\OneClick\Api\Data\OystCheckout\DiscountInterface[] $discounts
+     * @return $this
+     */
+    public function setDiscounts($discounts);
+    
+    /**
+     * @return \Oyst\OneClick\Api\Data\OystCheckout\ItemInterface[]|null
+     */
+    public function getChildItems();
+
+    /**
+     * @param \Oyst\OneClick\Api\Data\OystCheckout\ItemInterface[] $childItems
+     * @return $this
+     */
+    public function setChildItems($childItems);
+
+    /**
+     * @return string
+     */
+    public function getOystDisplay();
+
+    /**
+     * @param string $oystDisplay
+     * @return $this
+     */
+    public function setOystDisplay($oystDisplay);
+    
+    /**
+     * @return \Oyst\OneClick\Api\Data\OystCheckout\KeyValueInterface[]|null
+     */
+    public function getUserInput();
+
+    /**
+     * @param \Oyst\OneClick\Api\Data\OystCheckout\KeyValueInterface[] $userInput
+     * @return $this
+     */
+    public function setUserInput($userInput);
 }

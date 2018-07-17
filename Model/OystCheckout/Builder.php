@@ -28,7 +28,10 @@ class Builder
 
     protected $constantsMapper;
 
+    protected $eventManager;
+
     public function __construct(
+        \Magento\Framework\Event\ManagerInterface $eventManager,
         \Oyst\OneClick\Model\ConstantsMapper $constantsMapper,
         \Oyst\OneClick\Api\Data\OystCheckoutInterfaceFactory $oystCheckoutFactory,
         \Oyst\OneClick\Api\Data\OystCheckout\UserInterfaceFactory $oystCheckoutUserFactory,
@@ -43,6 +46,7 @@ class Builder
         \Oyst\OneClick\Api\Data\OystCheckout\ShippingMethodInterfaceFactory $oystCheckoutShippingMethodFactory
     )
     {
+        $this->eventManager = $eventManager;
         $this->constantsMapper = $constantsMapper;
         $this->oystCheckoutFactory = $oystCheckoutFactory;
         $this->oystCheckoutUserFactory = $oystCheckoutUserFactory;
@@ -151,7 +155,7 @@ class Builder
     {
         $oystCheckoutItems = [];
 
-        foreach($quote->getAllItems() as $item) {
+        foreach ($quote->getAllItems() as $item) {
             /* @var $item \Magento\Quote\Model\Quote\Item */
             $product = $item->getProduct();
             /* @var $oystCheckoutItem \Oyst\OneClick\Api\Data\OystCheckout\ItemInterface */
@@ -242,7 +246,7 @@ class Builder
 
         $oystCheckoutShipping->setAddress($this->buildOystCheckoutAddress($quote->getShippingAddress()));
         $oystCheckoutShipping->setMethodsAvailable($this->buildOystCheckoutShippingMethodsAvailable($shippingMethods));
-        $oystCheckoutShipping->setMethodUsed($this->buildOystCheckoutShippingMethodUsed($quote, $shippingMethods));
+        $oystCheckoutShipping->setMethodApplied($this->buildOystCheckoutShippingMethodApplied($quote, $shippingMethods));
 
         return $oystCheckoutShipping;
     }
@@ -253,7 +257,7 @@ class Builder
     {
         $oystCheckoutShippingMethods = [];
 
-        foreach($shippingMethods as $shippingMethod) {
+        foreach ($shippingMethods as $shippingMethod) {
             /* @var $shippingMethod \Magento\Quote\Api\Data\ShippingMethodInterface */
             /* @var $oystCheckoutShippingMethod \Oyst\OneClick\Api\Data\OystCheckout\ShippingMethodInterface */
             $oystCheckoutShippingMethod = $this->oystCheckoutShippingMethodFactory->create();
@@ -261,7 +265,7 @@ class Builder
             $oystCheckoutShippingMethod->setAmountTaxExcl($shippingMethod->getPriceExclTax());
             $oystCheckoutShippingMethod->setAmountTaxIncl($shippingMethod->getPriceInclTax());
             $oystCheckoutShippingMethod->setLabel($shippingMethod->getMethodTitle());
-            $oystCheckoutShippingMethod->setReference($shippingMethod->getMethodCode());
+            $oystCheckoutShippingMethod->setReference($shippingMethod->getCarrierCode() . '_' . $shippingMethod->getMethodCode());
 
             $oystCheckoutShippingMethods[] = $oystCheckoutShippingMethod;
         }
@@ -269,7 +273,7 @@ class Builder
         return $oystCheckoutShippingMethods;
     }
 
-    protected function buildOystCheckoutShippingMethodUsed(
+    protected function buildOystCheckoutShippingMethodApplied(
         \Magento\Quote\Model\Quote $quote,
         array $shippingMethods
     )

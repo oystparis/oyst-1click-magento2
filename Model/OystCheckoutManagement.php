@@ -93,11 +93,13 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
 
         $isRequestedShippingMethodAvailable = false;
         $shippingMethod = null;
-        foreach ($methodsAvailable as $methodAvailable) {
-            $shippingMethod = $methodAvailable->getCarrierCode() . '_' . $methodAvailable->getMethodCode();
-            if ($shippingMethod == $oystCheckoutShipping->getMethodUsed()->getReference()) {
-                $isRequestedShippingMethodAvailable = true;
-                break;
+        if ($oystCheckoutShipping->getMethodApplied()) {
+            foreach ($methodsAvailable as $methodAvailable) {
+                $shippingMethod = $methodAvailable->getCarrierCode() . '_' . $methodAvailable->getMethodCode();
+                if ($shippingMethod == $oystCheckoutShipping->getMethodApplied()->getReference()) {
+                    $isRequestedShippingMethodAvailable = true;
+                    break;
+                }
             }
         }
 

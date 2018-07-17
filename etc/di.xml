@@ -24,4 +24,5 @@
     <preference for="Oyst\OneClick\Api\Data\OystCheckout\UserAdvantagesFidelityPointInterface" type="Oyst\OneClick\Model\Data\OystCheckout\UserAdvantagesFidelityPoint"/>
 
     <preference for="Oyst\OneClick\Api\OystCheckoutManagementInterface" type="Oyst\OneClick\Model\OystCheckoutManagement"/>
+    <preference for="Oyst\OneClick\Api\OystConfigManagementInterface" type="Oyst\OneClick\Model\OystConfigManagement"/>
 </config>

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!--
+  This file is part of Oyst_OneClick for Magento 2.
+ 
+  @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
+  @author Oyst <plugin@oyst.com> <@oyst>
+  @category Oyst
+  @package Oyst_OneClick
+  @copyright Copyright (c) 2018 Oyst (http://www.oyst.com)
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="oyst" translate="label" sortOrder="150">
+            <label>Oyst</label>
+        </tab>
+        <section id="oyst_oneclick" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Oyst OneClick</label>
+            <tab>oyst</tab>
+            <resource>Oyst_OneClick::config</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General</label>
+                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enable Oyst OneClick</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="script_tag" translate="label" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Script Tag</label>
+                    <comment><![CDATA[This field contains the script-tag used by Oyst OneClick to display his button and modal, notice that this field is populated by Oyst Back Office via Magento API.]]></comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

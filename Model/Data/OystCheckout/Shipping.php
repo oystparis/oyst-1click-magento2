@@ -24,13 +24,13 @@ class Shipping extends \Magento\Framework\Api\AbstractSimpleObject implements \O
         return $this->setData(self::METHODS_AVAILABLE , $methodsAvailable);
     }
 
-    public function getMethodUsed()
+    public function getMethodApplied()
     {
-        return $this->_get(self::METHOD_USED);
+        return $this->_get(self::METHOD_APPLIED);
     }
 
-    public function setMethodUsed($methodUsed)
+    public function setMethodApplied($methodApplied)
     {
-        return $this->setData(self::METHOD_USED , $methodUsed);
+        return $this->setData(self::METHOD_APPLIED , $methodApplied);
     }
 }

@@ -14,7 +14,7 @@ interface ShippingInterface
 
     const ADDRESS = 'address';
     const METHODS_AVAILABLE = 'methods_available';
-    const METHOD_USED = 'method_used';
+    const METHOD_APPLIED = 'method_applied';
 
     /**#@-*/
 
@@ -43,11 +43,11 @@ interface ShippingInterface
     /**
      * @return \Oyst\OneClick\Api\Data\OystCheckout\ShippingMethodInterface
      */
-    public function getMethodUsed();
+    public function getMethodApplied();
 
     /**
-     * @param \Oyst\OneClick\Api\Data\OystCheckout\ShippingMethodInterface $methodUsed
+     * @param \Oyst\OneClick\Api\Data\OystCheckout\ShippingMethodInterface $methodApplied
      * @return $this
      */
-    public function setMethodUsed($methodUsed);
+    public function setMethodApplied($methodApplied);
 }

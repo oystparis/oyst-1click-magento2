@@ -27,7 +27,7 @@ abstract class AbstractOystManagement
     {
         try {
             return $this->customerRepository->get($email);
-        } catch (Magento\Framework\Exception\NoSuchEntityException $e) {
+        } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
             return $this->customerDataFactory->create();
         }
     }

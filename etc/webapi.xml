@@ -15,5 +15,12 @@
             <resource ref="Oyst_OneClick::checkout" />
         </resources>
     </route>
+    
+    <route url="/V1/oyst-oneclick/config/script-tag" method="PUT">
+        <service class="Oyst\OneClick\Api\OystConfigManagementInterface" method="saveOystConfigScriptTag"/>
+        <resources>
+            <resource ref="Oyst_OneClick::config" />
+        </resources>
+    </route>
 
 </routes>

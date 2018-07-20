@@ -3,9 +3,9 @@
     <body>
         <referenceContainer name="before.body.end">
             <block
-                class="Magento\Framework\View\Element\Template"
-                name="init_oyst"
-                template="Oyst_OneClick::init_oyst.phtml"
+                class="Oyst\OneClick\Block\ScriptTag"
+                name="oyst_oneclick.script_tag"
+                template="Oyst_OneClick::script_tag.phtml"
             />
         </referenceContainer>
     </body>

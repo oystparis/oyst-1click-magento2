@@ -3,17 +3,17 @@
 namespace Oyst\OneClick\Api\Data;
 
 /**
- * Interface OystCheckoutInterface
+ * Interface OystOrderInterface
  * @api
  */
-interface OystCheckoutInterface
+interface OystOrderInterface
 {
     /**#@+
      * Constants defined for keys of array, makes typos less likely
      */
 
     const OYST_ID = 'oyst_id';
-    const INTERNAL_ID = 'internal_id';
+    const REFERENCE = 'reference';
     const IP = 'ip';
     const USER = 'user';
     const ITEMS = 'items';
@@ -24,10 +24,11 @@ interface OystCheckoutInterface
     const BILLING = 'billing';
     const SHOP = 'shop';
     const MESSAGES = 'messages';
-    const AGREEMENTS = 'agreements';
     const CURRENCY = 'currency';
     const TOTALS = 'totals';
-    const CONTEXT = 'context';
+    const STATUS = 'status';
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
 
     /**#@-*/
 
@@ -45,13 +46,13 @@ interface OystCheckoutInterface
     /**
      * @return string
      */
-    public function getInternalId();
+    public function getReference();
 
     /**
-     * @param string $internalId
+     * @param string $reference
      * @return $this
      */
-    public function setInternalId($internalId);
+    public function setReference($reference);
 
     /**
      * @return string
@@ -164,17 +165,6 @@ interface OystCheckoutInterface
     public function setMessages($messages);
 
     /**
-     * @return \Oyst\OneClick\Api\Data\OystCheckout\CheckoutAgreementInterface[]|null
-     */
-    public function getAgreements();
-
-    /**
-     * @param \Oyst\OneClick\Api\Data\OystCheckout\CheckoutAgreementInterface[] $agreements
-     * @return $this
-     */
-    public function setAgreements($agreements);
-
-    /**
      * @return string
      */
     public function getCurrency();
@@ -197,13 +187,35 @@ interface OystCheckoutInterface
     public function setTotals($totals);
 
     /**
-     * @return \Oyst\OneClick\Api\Data\Common\KeyValueInterface[]|null
+     * @return string
      */
-    public function getContext();
+    public function getCreatedAt();
 
     /**
-     * @param \Oyst\OneClick\Api\Data\Common\KeyValueInterface[] $context
+     * @param string $createdAt
      * @return $this
      */
-    public function setContext($context);
+    public function setCreatedAt($createdAt);
+
+    /**
+     * @return string
+     */
+    public function getUpdatedAt();
+
+    /**
+     * @param string $updatedAt
+     * @return $this
+     */
+    public function setUpdatedAt($updatedAt);
+
+    /**
+     * @return \Oyst\OneClick\Api\Data\OystOrder\StatusInterface
+     */
+    public function getStatus();
+
+    /**
+     * @param \Oyst\OneClick\Api\Data\OystOrder\StatusInterface $status
+     * @return $this
+     */
+    public function setStatus($totals);
 }

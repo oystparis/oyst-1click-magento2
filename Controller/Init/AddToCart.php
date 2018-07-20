@@ -4,6 +4,13 @@ namespace Oyst\OneClick\Controller\Init;
 
 class AddToCart extends \Magento\Checkout\Controller\Cart\Add
 {
+    public function execute()
+    {
+        $result = parent::execute();
+        $this->_checkoutSession->setOystOneClickQuoteId($this->cart->getQuote()->getId());
+        return $result;
+    }
+    
     /**
      * Resolve response
      *

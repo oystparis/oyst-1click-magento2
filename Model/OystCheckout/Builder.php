@@ -26,6 +26,8 @@ class Builder
 
     protected $oystCheckoutShippingMethodFactory;
 
+    protected $oystCheckoutShopFactory;
+
     protected $constantsMapper;
 
     protected $eventManager;
@@ -34,16 +36,17 @@ class Builder
         \Magento\Framework\Event\ManagerInterface $eventManager,
         \Oyst\OneClick\Model\ConstantsMapper $constantsMapper,
         \Oyst\OneClick\Api\Data\OystCheckoutInterfaceFactory $oystCheckoutFactory,
-        \Oyst\OneClick\Api\Data\OystCheckout\UserInterfaceFactory $oystCheckoutUserFactory,
-        \Oyst\OneClick\Api\Data\OystCheckout\ItemInterfaceFactory $oystCheckoutItemFactory,
-        \Oyst\OneClick\Api\Data\OystCheckout\CountryInterfaceFactory $oystCheckoutCountryFactory,
-        \Oyst\OneClick\Api\Data\OystCheckout\ItemPriceInterfaceFactory $oystCheckoutItemPriceFactory,
-        \Oyst\OneClick\Api\Data\OystCheckout\TotalsInterfaceFactory $oystCheckoutTotalsFactory,
-        \Oyst\OneClick\Api\Data\OystCheckout\TotalDetailsInterfaceFactory $oystCheckoutTotalDetailsFactory,
-        \Oyst\OneClick\Api\Data\OystCheckout\AddressInterfaceFactory $oystCheckoutAddressFactory,
-        \Oyst\OneClick\Api\Data\OystCheckout\BillingInterfaceFactory $oystCheckoutBillingFactory,
-        \Oyst\OneClick\Api\Data\OystCheckout\ShippingInterfaceFactory $oystCheckoutShippingFactory,
-        \Oyst\OneClick\Api\Data\OystCheckout\ShippingMethodInterfaceFactory $oystCheckoutShippingMethodFactory
+        \Oyst\OneClick\Api\Data\Common\UserInterfaceFactory $oystCheckoutUserFactory,
+        \Oyst\OneClick\Api\Data\Common\ItemInterfaceFactory $oystCheckoutItemFactory,
+        \Oyst\OneClick\Api\Data\Common\CountryInterfaceFactory $oystCheckoutCountryFactory,
+        \Oyst\OneClick\Api\Data\Common\ItemPriceInterfaceFactory $oystCheckoutItemPriceFactory,
+        \Oyst\OneClick\Api\Data\Common\TotalsInterfaceFactory $oystCheckoutTotalsFactory,
+        \Oyst\OneClick\Api\Data\Common\TotalDetailsInterfaceFactory $oystCheckoutTotalDetailsFactory,
+        \Oyst\OneClick\Api\Data\Common\AddressInterfaceFactory $oystCheckoutAddressFactory,
+        \Oyst\OneClick\Api\Data\Common\BillingInterfaceFactory $oystCheckoutBillingFactory,
+        \Oyst\OneClick\Api\Data\Common\ShippingInterfaceFactory $oystCheckoutShippingFactory,
+        \Oyst\OneClick\Api\Data\Common\ShippingMethodInterfaceFactory $oystCheckoutShippingMethodFactory,
+        \Oyst\OneClick\Api\Data\Common\ShopInterfaceFactory $oystCheckoutShopFactory
     )
     {
         $this->eventManager = $eventManager;
@@ -59,6 +62,7 @@ class Builder
         $this->oystCheckoutShippingFactory = $oystCheckoutShippingFactory;
         $this->oystCheckoutShippingMethodFactory = $oystCheckoutShippingMethodFactory;
         $this->oystCheckoutCountryFactory = $oystCheckoutCountryFactory;
+        $this->oystCheckoutShopFactory = $oystCheckoutShopFactory;
     }
 
     public function buildOystCheckout(
@@ -80,6 +84,7 @@ class Builder
         $oystCheckout->setBilling($this->buildOystCheckoutBilling($quote));
         $oystCheckout->setShipping($this->buildOystCheckoutShipping($quote, $shippingMethods));
         $oystCheckout->setItems($this->buildOystCheckoutItems($quote));
+        $oystCheckout->setShop($this->buildOystCheckoutShop($quote));
 
         return $oystCheckout;
     }
@@ -88,7 +93,7 @@ class Builder
         \Magento\Quote\Model\Quote $quote
     )
     {
-        /* @var $oystCheckoutUser \Oyst\OneClick\Api\Data\OystCheckout\UserInterface */
+        /* @var $oystCheckoutUser \Oyst\OneClick\Api\Data\Common\UserInterface */
         $oystCheckoutUser = $this->oystCheckoutUserFactory->create();
 
         $customer = $quote->getCustomer();
@@ -110,7 +115,7 @@ class Builder
         \Magento\Quote\Api\Data\TotalsInterface $totals
     )
     {
-        /* @var $oystCheckoutTotals \Oyst\OneClick\Api\Data\OystCheckout\TotalsInterface */
+        /* @var $oystCheckoutTotals \Oyst\OneClick\Api\Data\Common\TotalsInterface */
         $oystCheckoutTotals = $this->oystCheckoutTotalsFactory->create();
 
         $oystCheckoutTotals->setDetailsTaxIncl($this->buildOystCheckoutTotalDetailsTaxIncl($totals));
@@ -123,7 +128,7 @@ class Builder
         \Magento\Quote\Api\Data\TotalsInterface $totals
     )
     {
-        /* @var $oystCheckoutTotalDetails \Oyst\OneClick\Api\Data\OystCheckout\TotalDetailsInterface */
+        /* @var $oystCheckoutTotalDetails \Oyst\OneClick\Api\Data\Common\TotalDetailsInterface */
         $oystCheckoutTotalDetails = $this->oystCheckoutTotalDetailsFactory->create();
 
         $oystCheckoutTotalDetails->setTotal($totals->getGrandTotal());
@@ -138,7 +143,7 @@ class Builder
         \Magento\Quote\Api\Data\TotalsInterface $totals
     )
     {
-        /* @var $oystCheckoutTotalDetails \Oyst\OneClick\Api\Data\OystCheckout\TotalDetailsInterface */
+        /* @var $oystCheckoutTotalDetails \Oyst\OneClick\Api\Data\Common\TotalDetailsInterface */
         $oystCheckoutTotalDetails = $this->oystCheckoutTotalDetailsFactory->create();
 
         $oystCheckoutTotalDetails->setTotal($totals->getGrandTotal() - $totals->getTaxAmount());
@@ -158,7 +163,7 @@ class Builder
         foreach ($quote->getAllItems() as $item) {
             /* @var $item \Magento\Quote\Model\Quote\Item */
             $product = $item->getProduct();
-            /* @var $oystCheckoutItem \Oyst\OneClick\Api\Data\OystCheckout\ItemInterface */
+            /* @var $oystCheckoutItem \Oyst\OneClick\Api\Data\Common\ItemInterface */
             $oystCheckoutItem = $this->oystCheckoutItemFactory->create();
 
             $oystCheckoutItem->setName($item->getName());
@@ -181,7 +186,7 @@ class Builder
         \Magento\Quote\Model\Quote\Item $item
     )
     {
-        /* @var $oystCheckoutItemPrice \Oyst\OneClick\Api\Data\OystCheckout\ItemPriceInterface */
+        /* @var $oystCheckoutItemPrice \Oyst\OneClick\Api\Data\Common\ItemPriceInterface */
         $oystCheckoutItemPrice = $this->oystCheckoutItemPriceFactory->create();
 
         $oystCheckoutItemPrice->setTaxIncl($item->getPriceInclTax());
@@ -198,7 +203,7 @@ class Builder
         \Magento\Quote\Model\Quote\Address $address
     )
     {
-        /* @var $oystCheckoutAddress \Oyst\OneClick\Api\Data\OystCheckout\AddressInterface */
+        /* @var $oystCheckoutAddress \Oyst\OneClick\Api\Data\Common\AddressInterface */
         $oystCheckoutAddress = $this->oystCheckoutAddressFactory->create();
 
         $oystCheckoutAddress->setFirstname($address->getFirstname());
@@ -209,13 +214,15 @@ class Builder
         $oystCheckoutAddress->setCountry($this->buildOystCheckoutCountry($address->getCountryModel()->getCountryId(), $address->getCountryModel()->getName()));
         $oystCheckoutAddress->setStreet1($address->getStreetLine(1));
         $oystCheckoutAddress->setStreet2($address->getStreetLine(2));
+        $oystCheckoutAddress->setPhoneMobile($address->getTelephone());
+        $oystCheckoutAddress->setPhone($address->getTelephone());
 
         return $oystCheckoutAddress;
     }
 
     protected function buildOystCheckoutCountry($code, $label)
     {
-        /* @var $oystCheckoutCountry \Oyst\OneClick\Api\Data\OystCheckout\CountryInterface */
+        /* @var $oystCheckoutCountry \Oyst\OneClick\Api\Data\Common\CountryInterface */
         $oystCheckoutCountry = $this->oystCheckoutCountryFactory->create();
 
         $oystCheckoutCountry->setCode($code);
@@ -228,7 +235,7 @@ class Builder
         \Magento\Quote\Model\Quote $quote
     )
     {
-        /* @var $oystCheckoutBilling \Oyst\OneClick\Api\Data\OystCheckout\BillingInterface */
+        /* @var $oystCheckoutBilling \Oyst\OneClick\Api\Data\Common\BillingInterface */
         $oystCheckoutBilling = $this->oystCheckoutBillingFactory->create();
 
         $oystCheckoutBilling->setAddress($this->buildOystCheckoutAddress($quote->getBillingAddress()));
@@ -241,7 +248,7 @@ class Builder
         array $shippingMethods
     )
     {
-        /* @var $oystCheckoutShipping \Oyst\OneClick\Api\Data\OystCheckout\ShippingInterface */
+        /* @var $oystCheckoutShipping \Oyst\OneClick\Api\Data\Common\ShippingInterface */
         $oystCheckoutShipping = $this->oystCheckoutShippingFactory->create();
 
         $oystCheckoutShipping->setAddress($this->buildOystCheckoutAddress($quote->getShippingAddress()));
@@ -259,7 +266,7 @@ class Builder
 
         foreach ($shippingMethods as $shippingMethod) {
             /* @var $shippingMethod \Magento\Quote\Api\Data\ShippingMethodInterface */
-            /* @var $oystCheckoutShippingMethod \Oyst\OneClick\Api\Data\OystCheckout\ShippingMethodInterface */
+            /* @var $oystCheckoutShippingMethod \Oyst\OneClick\Api\Data\Common\ShippingMethodInterface */
             $oystCheckoutShippingMethod = $this->oystCheckoutShippingMethodFactory->create();
 
             $oystCheckoutShippingMethod->setAmountTaxExcl($shippingMethod->getPriceExclTax());
@@ -287,5 +294,20 @@ class Builder
         }
 
         return null;
+    }
+
+    protected function buildOystCheckoutShop(
+        \Magento\Quote\Model\Quote $quote
+    )
+    {
+        $store = $quote->getStore();
+        /* @var $oystCheckoutShop \Oyst\OneClick\Api\Data\Common\ShopInterface */
+        $oystCheckoutShop = $this->oystCheckoutShopFactory->create();
+
+        $oystCheckoutShop->setCode($store->getCode());
+        $oystCheckoutShop->setLabel($store->getName());
+        $oystCheckoutShop->setUrl($store->getBaseUrl());
+
+        return $oystCheckoutShop;
     }
 }

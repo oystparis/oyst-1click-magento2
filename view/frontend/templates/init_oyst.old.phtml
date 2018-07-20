@@ -60,7 +60,7 @@
                     if (200 === xhr.status) {
                         //console.log(xhr.responseText);
                         require(['Magento_Customer/js/customer-data'], function(customerData) {
-                            customerData.reload(['cart']);
+                            customerData.reload(['cart', 'messages']);
                         });
                     }
                 };
@@ -82,3 +82,19 @@ function ready(fn) {
 </script>
 
 <script src="https://oneclick-front.test2.oyst.eu/oyst.min.js"></script>
+
+<!--
+<script src="http://c0272a0e.ngrok.io/pub/static/magento2.js"></script>
+<script src="http://c0272a0e.ngrok.io/pub/static/super-tag.js?omid=a5976375-965f-4953-afe0-a1d896b33e4a"></script>
+
+<script>
+    window.__OYST__.webpackEventEmitter1.on('OystOneClickAddToCartBefore', function(transport){
+        //transport.isFormValid = false;
+    });
+    window.__OYST__.webpackEventEmitter1.on('OystOneClickAddToCartSuccess', function(transport){
+        require(['Magento_Customer/js/customer-data'], function(customerData) {
+            customerData.reload(['cart']);
+        });
+    });
+</script>
+-->

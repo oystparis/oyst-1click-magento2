@@ -14,13 +14,20 @@ class Synchronizer
      */
     protected $eventManager;
 
+    /**
+     * @var \Magento\Quote\Api\Data\PaymentInterfaceFactory
+     */
+    protected $paymentFactory;
+
     public function __construct(
         \Magento\Checkout\Model\Cart $cart,
-        \Magento\Framework\Event\ManagerInterface $eventManager
+        \Magento\Framework\Event\ManagerInterface $eventManager,
+        \Magento\Quote\Api\Data\PaymentInterfaceFactory $paymentFactory
     )
     {
         $this->cart = $cart;
         $this->eventManager = $eventManager;
+        $this->paymentFactory = $paymentFactory;
     }
 
     public function syncMagentoQuote(
@@ -35,6 +42,7 @@ class Synchronizer
         $this->syncMagentoAddresses($quote, $oystCheckout->getBilling(), $oystCheckout->getShipping());
         $this->syncMagentoCustomer($quote, $customer, $oystCheckout->getUser());
         $this->syncMagentoQuoteItems($quote, $oystCheckout->getItems());
+        $this->syncMagentoPaymentMethod($quote);
 
         return true;
     }
@@ -78,7 +86,7 @@ class Synchronizer
     protected function syncMagentoCustomer(
         \Magento\Quote\Model\Quote $quote,
         \Magento\Customer\Api\Data\CustomerInterface $customer,
-        \Oyst\OneClick\Api\Data\OystCheckout\UserInterface $oystCheckoutUser
+        \Oyst\OneClick\Api\Data\Common\UserInterface $oystCheckoutUser
     )
     {
         if($customer->getId()) {
@@ -87,6 +95,7 @@ class Synchronizer
             $quote->setCustomerEmail($oystCheckoutUser->getEmail());
             $quote->setCustomerFirstname($oystCheckoutUser->getFirstname());
             $quote->setCustomerLastname($oystCheckoutUser->getLastname());
+            $quote->setCheckoutMethod(\Magento\Quote\Api\CartManagementInterface::METHOD_GUEST);
         }
 
         return true;
@@ -99,8 +108,8 @@ class Synchronizer
 
     protected function syncMagentoAddresses(
         \Magento\Quote\Model\Quote $quote,
-        \Oyst\OneClick\Api\Data\OystCheckout\BillingInterface $oystCheckoutBilling,
-        \Oyst\OneClick\Api\Data\OystCheckout\ShippingInterface $oystCheckoutShipping
+        \Oyst\OneClick\Api\Data\Common\BillingInterface $oystCheckoutBilling,
+        \Oyst\OneClick\Api\Data\Common\ShippingInterface $oystCheckoutShipping
     )
     {
         /* @var Magento\Quote\Model\Quote\Address $billingAddress */
@@ -125,7 +134,7 @@ class Synchronizer
     }
 
     protected function getAddressData(
-        \Oyst\OneClick\Api\Data\OystCheckout\AddressInterface $oystCheckoutAddress
+        \Oyst\OneClick\Api\Data\Common\AddressInterface $oystCheckoutAddress
     )
     {
         $addressData = [];
@@ -141,6 +150,24 @@ class Synchronizer
         $addressData['company'] = $oystCheckoutAddress->getCompany();
 
         return $addressData;
+    }
+
+    protected function syncMagentoPaymentMethod(
+        \Magento\Quote\Model\Quote $quote
+    )
+    {
+        $payment = $this->paymentFactory->create();
+        $payment->setMethod(\Oyst\OneClick\Model\Payment\Method\OneClick::PAYMENT_METHOD_OYST_ONECLICK_CODE);
+
+        $quote->getPayment()->importData($payment->getData());
+
+        if ($quote->isVirtual()) {
+            $quote->getBillingAddress()->setPaymentMethod($quote->getPayment()->getMethod());
+        } else {
+            $quote->getShippingAddress()->setPaymentMethod($quote->getPayment()->getMethod());
+        }
+
+        return true;
     }
 }
 

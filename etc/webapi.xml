@@ -23,4 +23,11 @@
         </resources>
     </route>
 
+    <route url="/V1/oyst-oneclick/order/:oystId" method="POST">
+        <service class="Oyst\OneClick\Api\OystOrderManagementInterface" method="createOrderFromOystCheckout"/>
+        <resources>
+            <resource ref="Oyst_OneClick::order" />
+        </resources>
+    </route>
+
 </routes>

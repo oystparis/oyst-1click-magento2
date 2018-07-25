@@ -18,7 +18,7 @@ But you can also request or suggest new features or code changes yourself!
 ## Installation
 
 1. `composer config repositories.oyst-1click-magento2 git https://github.com/oystparis/oyst-1click-magento2`
-2. `composer require oyst/oyst-1click-magento2`
+2. `composer require oyst/oyst-1click-magento2` or `composer require oyst/oyst-1click-magento2:dev-[BRANCH-NAME]` for get release from specific branch
 3. `php -f bin/magento module:enable Oyst_OneClick`
 4. `php -f bin/magento setup:upgrade`
 

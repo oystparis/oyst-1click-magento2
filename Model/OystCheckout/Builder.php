@@ -2,73 +2,54 @@
 
 namespace Oyst\OneClick\Model\OystCheckout;
 
-class Builder
+class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
 {
     protected $oystCheckoutFactory;
 
-    protected $oystCheckoutUserFactory;
-
-    protected $oystCheckoutItemFactory;
-
-    protected $oystCheckoutCountryFactory;
-
-    protected $oystCheckoutItemPriceFactory;
-
-    protected $oystCheckoutTotalsFactory;
-
-    protected $oystCheckoutTotalDetailsFactory;
-
-    protected $oystCheckoutAddressFactory;
-
-    protected $oystCheckoutBillingFactory;
-
     protected $oystCheckoutShippingFactory;
-
-    protected $oystCheckoutShippingMethodFactory;
-
-    protected $oystCheckoutShopFactory;
-
-    protected $constantsMapper;
-
-    protected $eventManager;
 
     public function __construct(
         \Magento\Framework\Event\ManagerInterface $eventManager,
         \Oyst\OneClick\Model\ConstantsMapper $constantsMapper,
+        \Oyst\OneClick\Api\Data\Common\AddressInterfaceFactory $oystCommonAddressFactory,
+        \Oyst\OneClick\Api\Data\Common\BillingInterfaceFactory $oystCommonBillingFactory,
+        \Oyst\OneClick\Api\Data\Common\CountryInterfaceFactory $oystCommonCountryFactory,
+        \Oyst\OneClick\Api\Data\Common\ItemAttributeInterfaceFactory $oystCommonItemAttributeInterfaceFactory,
+        \Oyst\OneClick\Api\Data\Common\ItemInterfaceFactory $oystCommonItemFactory,
+        \Oyst\OneClick\Api\Data\Common\ItemPriceInterfaceFactory $oystCommonItemPriceFactory,
+        \Oyst\OneClick\Api\Data\Common\ShippingMethodInterfaceFactory $oystCommonShippingMethodFactory,
+        \Oyst\OneClick\Api\Data\Common\ShopInterfaceFactory $oystCommonShopFactory,
+        \Oyst\OneClick\Api\Data\Common\TotalDetailsInterfaceFactory $oystCommonTotalDetailsFactory,
+        \Oyst\OneClick\Api\Data\Common\TotalsInterfaceFactory $oystCommonTotalsFactory,
+        \Oyst\OneClick\Api\Data\Common\UserInterfaceFactory $oystCommonUserFactory,
         \Oyst\OneClick\Api\Data\OystCheckoutInterfaceFactory $oystCheckoutFactory,
-        \Oyst\OneClick\Api\Data\Common\UserInterfaceFactory $oystCheckoutUserFactory,
-        \Oyst\OneClick\Api\Data\Common\ItemInterfaceFactory $oystCheckoutItemFactory,
-        \Oyst\OneClick\Api\Data\Common\CountryInterfaceFactory $oystCheckoutCountryFactory,
-        \Oyst\OneClick\Api\Data\Common\ItemPriceInterfaceFactory $oystCheckoutItemPriceFactory,
-        \Oyst\OneClick\Api\Data\Common\TotalsInterfaceFactory $oystCheckoutTotalsFactory,
-        \Oyst\OneClick\Api\Data\Common\TotalDetailsInterfaceFactory $oystCheckoutTotalDetailsFactory,
-        \Oyst\OneClick\Api\Data\Common\AddressInterfaceFactory $oystCheckoutAddressFactory,
-        \Oyst\OneClick\Api\Data\Common\BillingInterfaceFactory $oystCheckoutBillingFactory,
-        \Oyst\OneClick\Api\Data\Common\ShippingInterfaceFactory $oystCheckoutShippingFactory,
-        \Oyst\OneClick\Api\Data\Common\ShippingMethodInterfaceFactory $oystCheckoutShippingMethodFactory,
-        \Oyst\OneClick\Api\Data\Common\ShopInterfaceFactory $oystCheckoutShopFactory
+        \Oyst\OneClick\Api\Data\OystCheckout\ShippingInterfaceFactory $oystCheckoutShippingFactory
     )
     {
-        $this->eventManager = $eventManager;
-        $this->constantsMapper = $constantsMapper;
         $this->oystCheckoutFactory = $oystCheckoutFactory;
-        $this->oystCheckoutUserFactory = $oystCheckoutUserFactory;
-        $this->oystCheckoutItemFactory = $oystCheckoutItemFactory;
-        $this->oystCheckoutItemPriceFactory = $oystCheckoutItemPriceFactory;
-        $this->oystCheckoutTotalsFactory = $oystCheckoutTotalsFactory;
-        $this->oystCheckoutTotalDetailsFactory = $oystCheckoutTotalDetailsFactory;
-        $this->oystCheckoutAddressFactory = $oystCheckoutAddressFactory;
-        $this->oystCheckoutBillingFactory = $oystCheckoutBillingFactory;
         $this->oystCheckoutShippingFactory = $oystCheckoutShippingFactory;
-        $this->oystCheckoutShippingMethodFactory = $oystCheckoutShippingMethodFactory;
-        $this->oystCheckoutCountryFactory = $oystCheckoutCountryFactory;
-        $this->oystCheckoutShopFactory = $oystCheckoutShopFactory;
+        parent::__construct(
+            $eventManager,
+            $constantsMapper,
+            $oystCommonAddressFactory,
+            $oystCommonBillingFactory,
+            $oystCommonCountryFactory,
+            $oystCommonItemAttributeInterfaceFactory,
+            $oystCommonItemFactory,
+            $oystCommonItemPriceFactory,
+            $oystCommonShippingMethodFactory,
+            $oystCommonShopFactory,
+            $oystCommonTotalDetailsFactory,
+            $oystCommonTotalsFactory,
+            $oystCommonUserFactory
+        );
     }
 
     public function buildOystCheckout(
         \Magento\Quote\Model\Quote $quote,
         \Magento\Quote\Api\Data\TotalsInterface $totals,
-        array $shippingMethods
+        array $shippingMethods,
+        \Magento\Catalog\Model\ResourceModel\Product\Collection $products
     )
     {
         /* @var $oystCheckout \Oyst\OneClick\Api\Data\OystCheckoutInterface */
@@ -79,36 +60,17 @@ class Builder
         $oystCheckout->setIp($quote->getRemoteIp());
         $oystCheckout->setCurrency($quote->getCurrency()->getQuoteCurrencyCode());
 
-        $oystCheckout->setUser($this->buildOystCheckoutUser($quote));
+        $oystCheckout->setUser($this->buildOystCheckoutUser($quote->getCustomer(), $quote));
         $oystCheckout->setTotals($this->buildOystCheckoutTotals($totals));
         $oystCheckout->setBilling($this->buildOystCheckoutBilling($quote));
-        $oystCheckout->setShipping($this->buildOystCheckoutShipping($quote, $shippingMethods));
-        $oystCheckout->setItems($this->buildOystCheckoutItems($quote));
-        $oystCheckout->setShop($this->buildOystCheckoutShop($quote));
+        $oystCheckout->setItems($this->buildOystCheckoutItemsFacade($quote->getAllItems(), $products));
+        $oystCheckout->setShop($this->buildOystCommonShop($quote->getStore()));
 
-        return $oystCheckout;
-    }
-
-    protected function buildOystCheckoutUser(
-        \Magento\Quote\Model\Quote $quote
-    )
-    {
-        /* @var $oystCheckoutUser \Oyst\OneClick\Api\Data\Common\UserInterface */
-        $oystCheckoutUser = $this->oystCheckoutUserFactory->create();
-
-        $customer = $quote->getCustomer();
-
-        if ($customer->getId()) {
-            $oystCheckoutUser->setEmail($customer->getEmail());
-            $oystCheckoutUser->setFirstname($customer->getFirstname());
-            $oystCheckoutUser->setLastname($customer->getLastname());
-        } else {
-            $oystCheckoutUser->setEmail($quote->getCustomerEmail());
-            $oystCheckoutUser->setFirstname($quote->getCustomerFirstname());
-            $oystCheckoutUser->setLastname($quote->getCustomerLastname());
+        if (!$quote->isVirtual()) {
+            $oystCheckout->setShipping($this->buildOystCheckoutShipping($quote, $shippingMethods));
         }
 
-        return $oystCheckoutUser;
+        return $oystCheckout;
     }
 
     protected function buildOystCheckoutTotals(
@@ -116,7 +78,7 @@ class Builder
     )
     {
         /* @var $oystCheckoutTotals \Oyst\OneClick\Api\Data\Common\TotalsInterface */
-        $oystCheckoutTotals = $this->oystCheckoutTotalsFactory->create();
+        $oystCheckoutTotals = $this->oystCommonTotalsFactory->create();
 
         $oystCheckoutTotals->setDetailsTaxIncl($this->buildOystCheckoutTotalDetailsTaxIncl($totals));
         $oystCheckoutTotals->setDetailsTaxExcl($this->buildOystCheckoutTotalDetailsTaxExcl($totals));
@@ -129,7 +91,7 @@ class Builder
     )
     {
         /* @var $oystCheckoutTotalDetails \Oyst\OneClick\Api\Data\Common\TotalDetailsInterface */
-        $oystCheckoutTotalDetails = $this->oystCheckoutTotalDetailsFactory->create();
+        $oystCheckoutTotalDetails = $this->oystCommonTotalDetailsFactory->create();
 
         $oystCheckoutTotalDetails->setTotal($totals->getGrandTotal());
         $oystCheckoutTotalDetails->setTotalDiscount($totals->getDiscountAmount());
@@ -144,7 +106,7 @@ class Builder
     )
     {
         /* @var $oystCheckoutTotalDetails \Oyst\OneClick\Api\Data\Common\TotalDetailsInterface */
-        $oystCheckoutTotalDetails = $this->oystCheckoutTotalDetailsFactory->create();
+        $oystCheckoutTotalDetails = $this->oystCommonTotalDetailsFactory->create();
 
         $oystCheckoutTotalDetails->setTotal($totals->getGrandTotal() - $totals->getTaxAmount());
         /*$oystCheckoutTotalDetails->setTotalDiscount($totals->getDiscountAmount());
@@ -154,32 +116,105 @@ class Builder
         return $oystCheckoutTotalDetails;
     }
 
-    protected function buildOystCheckoutItems(
-        \Magento\Quote\Model\Quote $quote
+    protected function buildOystCheckoutItemsFacade(
+        array $items,
+        \Magento\Catalog\Model\ResourceModel\Product\Collection $products
     )
     {
         $oystCheckoutItems = [];
 
-        foreach ($quote->getAllItems() as $item) {
-            /* @var $item \Magento\Quote\Model\Quote\Item */
-            $product = $item->getProduct();
-            /* @var $oystCheckoutItem \Oyst\OneClick\Api\Data\Common\ItemInterface */
-            $oystCheckoutItem = $this->oystCheckoutItemFactory->create();
+        $itemsByParentItemId = [];
+        foreach ($items as $item) {
+            if ($item->getData('parent_item_id')) {
+                $itemsByParentItemId[$item->getData('parent_item_id')][] = $item;
+            }
+        }
 
-            $oystCheckoutItem->setName($item->getName());
-            $oystCheckoutItem->setType($this->constantsMapper->mapMagentoProductTypeToOystCheckoutItemType($item->getProductType()));
-            $oystCheckoutItem->setDescriptionShort($product->getShortDescription());
-            $oystCheckoutItem->setReference($item->getSku());
-            $oystCheckoutItem->setInternalReference($item->getId());
-            $oystCheckoutItem->setImage($product->getImage());
-            $oystCheckoutItem->setWeight($product->getWeight());
-            $oystCheckoutItem->setQuantity($item->getQty());
-            $oystCheckoutItem->setPrice($this->buildOystCheckoutItemPrice($item));
-
-            $oystCheckoutItems[] = $oystCheckoutItem;
+        foreach ($items as $item) {
+            if (!$item->getData('parent_item_id')) {
+                $childItems = isset($itemsByParentItemId[$item->getId()]) ? $itemsByParentItemId[$item->getId()] : null;
+                $oystCheckoutItems[] = $this->buildOystCheckoutItem($products, $item, $childItems);
+            }
         }
 
         return $oystCheckoutItems;
+    }
+
+    protected function buildOystCheckoutItem(
+        \Magento\Catalog\Model\ResourceModel\Product\Collection $products,
+        \Magento\Quote\Model\Quote\Item $item,
+        array $childItems = null
+    )
+    {
+        /* @var $item \Magento\Quote\Model\Quote\Item */
+        /* @var $childItems \Magento\Quote\Model\Quote\Item[] */
+        $product = $products->getItemById($item->getProductId());
+        /* @var $oystCheckoutItem \Oyst\OneClick\Api\Data\Common\ItemInterface */
+        $oystCheckoutItem = $this->oystCommonItemFactory->create();
+
+        $oystCheckoutItem->setName($item->getName());
+        $oystCheckoutItem->setType($this->constantsMapper->mapMagentoProductTypeToOystCheckoutItemType($item->getProductType()));
+        $oystCheckoutItem->setDescriptionShort($product->getShortDescription());
+        $oystCheckoutItem->setReference($item->getSku());
+        $oystCheckoutItem->setInternalReference($item->getId());
+        $oystCheckoutItem->setImage($product->getImage());
+        $oystCheckoutItem->setWeight($product->getWeight());
+        $oystCheckoutItem->setQuantity($item->getQty());
+        $oystCheckoutItem->setPrice($this->buildOystCheckoutItemPrice($item));
+
+        if (isset($childItems) && $item->getProductType() == \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE) {
+            $this->addVariantInfosToOystCheckoutItem($oystCheckoutItem, $products, $item, $childItems[0]);
+        } elseif (isset($childItems) && $item->getProductType() == \Magento\Bundle\Model\Product\Type::TYPE_CODE) {
+            $this->addBundleInfosToOystCheckoutItem($oystCheckoutItem, $products, $childItems);
+        }
+
+        return $oystCheckoutItem;
+    }
+
+    protected function addVariantInfosToOystCheckoutItem(
+        \Oyst\OneClick\Api\Data\Common\ItemInterface $oystCheckoutItem,
+        \Magento\Catalog\Model\ResourceModel\Product\Collection $products,
+        \Magento\Quote\Model\Quote\Item $item,
+        \Magento\Quote\Model\Quote\Item $childItem
+    )
+    {
+        $product = $products->getItemById($item->getProductId());
+        $childProduct = $products->getItemById($childItem->getProductId());
+
+        $attributesVariant = [];
+        $configurableAttributes = $product->getTypeInstance()->getConfigurableAttributes($product);
+        foreach ($configurableAttributes as $configurableAttribute) {
+            /* @var $oystCheckoutItemAttribute \Oyst\OneClick\Api\Data\Common\ItemAttributeInterface */
+            $oystCheckoutItemAttribute = $this->oystCommonItemAttributeInterfaceFactory->create();
+            
+            $options = $configurableAttribute->getProductAttribute()->getSource()->getAllOptions(false);
+            
+            $oystCheckoutItemAttribute->setCode($configurableAttribute->getProductAttribute()->getAttributeCode());
+            $oystCheckoutItemAttribute->setLabel($configurableAttribute->getProductAttribute()->getStoreLabel());
+            foreach ($configurableAttribute->getProductAttribute()->getSource()->getAllOptions(false) as $option) {
+                if ($option['value'] == $childProduct->getData($configurableAttribute->getProductAttribute()->getAttributeCode())) {
+                    $oystCheckoutItemAttribute->setValue($option['label']);
+                }
+            }
+
+            $attributesVariant[] = $oystCheckoutItemAttribute;
+        }
+
+        $oystCheckoutItem->setAttributesVariant($attributesVariant);
+        $oystCheckoutItem->setChildItems([$this->buildOystCheckoutItem($products, $childItem)]);
+    }
+
+    protected function addBundleInfosToOystCheckoutItem(
+        \Oyst\OneClick\Api\Data\Common\ItemInterface $oystCheckoutItem,
+        \Magento\Catalog\Model\ResourceModel\Product\Collection $products,
+        array $childItems
+    )
+    {
+        $childOystCheckoutItems = [];
+        foreach($childItems as $childItem) {
+            $childOystCheckoutItems[] = $this->buildOystCheckoutItem($products, $childItem);
+        }
+        $oystCheckoutItem->setChildItems($childOystCheckoutItems);
     }
 
     protected function buildOystCheckoutItemPrice(
@@ -187,7 +222,7 @@ class Builder
     )
     {
         /* @var $oystCheckoutItemPrice \Oyst\OneClick\Api\Data\Common\ItemPriceInterface */
-        $oystCheckoutItemPrice = $this->oystCheckoutItemPriceFactory->create();
+        $oystCheckoutItemPrice = $this->oystCommonItemPriceFactory->create();
 
         $oystCheckoutItemPrice->setTaxIncl($item->getPriceInclTax());
         $oystCheckoutItemPrice->setTaxExcl($item->getPrice());
@@ -204,14 +239,14 @@ class Builder
     )
     {
         /* @var $oystCheckoutAddress \Oyst\OneClick\Api\Data\Common\AddressInterface */
-        $oystCheckoutAddress = $this->oystCheckoutAddressFactory->create();
+        $oystCheckoutAddress = $this->oystCommonAddressFactory->create();
 
         $oystCheckoutAddress->setFirstname($address->getFirstname());
         $oystCheckoutAddress->setLastname($address->getLastname());
         $oystCheckoutAddress->setEmail($address->getEmail());
         $oystCheckoutAddress->setCity($address->getCity());
         $oystCheckoutAddress->setPostcode($address->getPostcode());
-        $oystCheckoutAddress->setCountry($this->buildOystCheckoutCountry($address->getCountryModel()->getCountryId(), $address->getCountryModel()->getName()));
+        $oystCheckoutAddress->setCountry($this->buildOystCommonCountry($address->getCountryModel()->getCountryId(), $address->getCountryModel()->getName()));
         $oystCheckoutAddress->setStreet1($address->getStreetLine(1));
         $oystCheckoutAddress->setStreet2($address->getStreetLine(2));
         $oystCheckoutAddress->setPhoneMobile($address->getTelephone());
@@ -220,23 +255,12 @@ class Builder
         return $oystCheckoutAddress;
     }
 
-    protected function buildOystCheckoutCountry($code, $label)
-    {
-        /* @var $oystCheckoutCountry \Oyst\OneClick\Api\Data\Common\CountryInterface */
-        $oystCheckoutCountry = $this->oystCheckoutCountryFactory->create();
-
-        $oystCheckoutCountry->setCode($code);
-        $oystCheckoutCountry->setLabel($label);
-
-        return $oystCheckoutCountry;
-    }
-
     protected function buildOystCheckoutBilling(
         \Magento\Quote\Model\Quote $quote
     )
     {
         /* @var $oystCheckoutBilling \Oyst\OneClick\Api\Data\Common\BillingInterface */
-        $oystCheckoutBilling = $this->oystCheckoutBillingFactory->create();
+        $oystCheckoutBilling = $this->oystCommonBillingFactory->create();
 
         $oystCheckoutBilling->setAddress($this->buildOystCheckoutAddress($quote->getBillingAddress()));
 
@@ -248,12 +272,12 @@ class Builder
         array $shippingMethods
     )
     {
-        /* @var $oystCheckoutShipping \Oyst\OneClick\Api\Data\Common\ShippingInterface */
+        /* @var $oystCheckoutShipping \Oyst\OneClick\Api\Data\OystCheckout\ShippingInterface */
         $oystCheckoutShipping = $this->oystCheckoutShippingFactory->create();
 
         $oystCheckoutShipping->setAddress($this->buildOystCheckoutAddress($quote->getShippingAddress()));
         $oystCheckoutShipping->setMethodsAvailable($this->buildOystCheckoutShippingMethodsAvailable($shippingMethods));
-        $oystCheckoutShipping->setMethodApplied($this->buildOystCheckoutShippingMethodApplied($quote, $shippingMethods));
+        $oystCheckoutShipping->setMethodApplied($this->buildOystCheckoutShippingMethodApplied($quote->getShippingAddress()->getShippingMethod(), $shippingMethods));
 
         return $oystCheckoutShipping;
     }
@@ -267,7 +291,7 @@ class Builder
         foreach ($shippingMethods as $shippingMethod) {
             /* @var $shippingMethod \Magento\Quote\Api\Data\ShippingMethodInterface */
             /* @var $oystCheckoutShippingMethod \Oyst\OneClick\Api\Data\Common\ShippingMethodInterface */
-            $oystCheckoutShippingMethod = $this->oystCheckoutShippingMethodFactory->create();
+            $oystCheckoutShippingMethod = $this->oystCommonShippingMethodFactory->create();
 
             $oystCheckoutShippingMethod->setAmountTaxExcl($shippingMethod->getPriceExclTax());
             $oystCheckoutShippingMethod->setAmountTaxIncl($shippingMethod->getPriceInclTax());
@@ -281,12 +305,10 @@ class Builder
     }
 
     protected function buildOystCheckoutShippingMethodApplied(
-        \Magento\Quote\Model\Quote $quote,
+        $shippingMethod,
         array $shippingMethods
     )
     {
-        $shippingMethod = $quote->getShippingAddress()->getShippingMethod();
-
         foreach ($this->buildOystCheckoutShippingMethodsAvailable($shippingMethods) as $oystCheckoutShippingMethod) {
             if ($oystCheckoutShippingMethod->getReference() == $shippingMethod) {
                 return $oystCheckoutShippingMethod;
@@ -296,18 +318,24 @@ class Builder
         return null;
     }
 
-    protected function buildOystCheckoutShop(
+    protected function buildOystCheckoutUser(
+        \Magento\Customer\Api\Data\CustomerInterface $customer,
         \Magento\Quote\Model\Quote $quote
     )
     {
-        $store = $quote->getStore();
-        /* @var $oystCheckoutShop \Oyst\OneClick\Api\Data\Common\ShopInterface */
-        $oystCheckoutShop = $this->oystCheckoutShopFactory->create();
+        /* @var $oystCommonUser \Oyst\OneClick\Api\Data\Common\UserInterface */
+        $oystCommonUser = $this->oystCommonUserFactory->create();
 
-        $oystCheckoutShop->setCode($store->getCode());
-        $oystCheckoutShop->setLabel($store->getName());
-        $oystCheckoutShop->setUrl($store->getBaseUrl());
+        if ($customer->getId()) {
+            $oystCommonUser->setEmail($customer->getEmail());
+            $oystCommonUser->setFirstname($customer->getFirstname());
+            $oystCommonUser->setLastname($customer->getLastname());
+        } else {
+            $oystCommonUser->setEmail($quote->getCustomerEmail());
+            $oystCommonUser->setFirstname($quote->getCustomerFirstname());
+            $oystCommonUser->setLastname($quote->getCustomerLastname());
+        }
 
-        return $oystCheckoutShop;
+        return $oystCommonUser;
     }
 }

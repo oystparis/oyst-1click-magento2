@@ -28,7 +28,7 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
      * @var \Oyst\OneClick\Model\MagentoQuote\Synchronizer
      */
     protected $magentoQuoteSynchronizer;
-
+    
     public function __construct(
         \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
         \Magento\Quote\Api\CartTotalRepositoryInterface $cartTotalRepository,
@@ -37,7 +37,8 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
         \Oyst\OneClick\Model\MagentoQuote\Synchronizer $magentoQuoteSynchronizer,
         \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
         \Magento\Customer\Api\Data\CustomerInterfaceFactory $customerDataFactory,
-        \Magento\Quote\Model\ResourceModel\Quote\CollectionFactory $quoteCollectionFactory
+        \Magento\Quote\Model\ResourceModel\Quote\CollectionFactory $quoteCollectionFactory,
+        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory
     )
     {
         $this->quoteRepository = $quoteRepository;
@@ -45,7 +46,7 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
         $this->shippingMethodManagement = $shippingMethodManagement;
         $this->oystCheckoutBuilder = $oystCheckoutBuilder;
         $this->magentoQuoteSynchronizer = $magentoQuoteSynchronizer;
-        parent::__construct($customerRepository, $customerDataFactory, $quoteCollectionFactory);
+        parent::__construct($customerRepository, $customerDataFactory, $quoteCollectionFactory, $productCollectionFactory);
     }
 
     public function getOystCheckoutFromMagentoQuote($id)
@@ -53,19 +54,22 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
         $quote = $this->quoteRepository->getActive($id);
         $totals = $this->cartTotalRepository->get($id);
         $shippingMethods = $quote->getShippingAddress()->getCountryId() ? $this->shippingMethodManagement->getList($id) : [];
-
-        return $this->oystCheckoutBuilder->buildOystCheckout($quote, $totals, $shippingMethods);
+        $products = $this->getMagenteProductsById(array_map(function($item) {return $item->getProductId();}, $quote->getAllItems()));
+        
+        return $this->oystCheckoutBuilder->buildOystCheckout($quote, $totals, $shippingMethods, $products);
     }
 
     public function syncMagentoQuoteWithOystCheckout($oystId, \Oyst\OneClick\Api\Data\OystCheckoutInterface $oystCheckout)
     {
         /* @var Magento\Quote\Model\Quote $quote */
         $quote = $this->quoteRepository->getActive($oystCheckout->getInternalId());
-        /* @var Magento\Customer\Model\Customer $customer */
+        /* @var Magento\Customer\Api\Data\CustomerInterface $customer */
         $customer = $this->getMagentoCustomer($oystCheckout->getUser()->getEmail());
-        $this->magentoQuoteSynchronizer->syncMagentoQuote($quote, $customer,$oystCheckout);
+        $this->magentoQuoteSynchronizer->syncMagentoQuote($oystCheckout, $quote, $customer);
 
-        $this->resolveSetShippingMethodStrategy($quote, $oystCheckout->getShipping());
+        if(!$quote->isVirtual()) {
+            $this->resolveSetShippingMethodStrategy($quote, $oystCheckout->getShipping());
+        }
         $this->resolveCustomerCreationStrategy($customer, $oystCheckout->getUser());
 
         $quote->setTotalsCollectedFlag(false)->collectTotals();
@@ -78,12 +82,12 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
      * Business logic : if shipping method requested by Oyst OneClick is available after all quote recalculations,
      * then set it else use the cheapeast shipping method available.
      * @param \Magento\Quote\Model\Quote $quote
-     * @param \Oyst\OneClick\Api\Data\Common\ShippingInterface $oystCheckoutShipping
+     * @param \Oyst\OneClick\Api\Data\OystCheckout\ShippingInterface $oystCheckoutShipping
      * @return $this
      */
     protected function resolveSetShippingMethodStrategy(
         \Magento\Quote\Model\Quote $quote,
-        \Oyst\OneClick\Api\Data\Common\ShippingInterface $oystCheckoutShipping
+        \Oyst\OneClick\Api\Data\OystCheckout\ShippingInterface $oystCheckoutShipping
     )
     {
         $quote->setTotalsCollectedFlag(false)->collectTotals();
@@ -114,7 +118,9 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
                     ];
                 }
             }
-            $shippingMethod = $cheapestShippingMethodAvailable['code'];
+            if (isset($cheapestShippingMethodAvailable['code'])) {
+                $shippingMethod = $cheapestShippingMethodAvailable['code'];
+            }
         }
 
         $quote->getShippingAddress()->setShippingMethod($shippingMethod);

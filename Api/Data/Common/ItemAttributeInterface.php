@@ -14,6 +14,7 @@ interface ItemAttributeInterface
 
     const CODE = 'code';
     const LABEL = 'label';
+    const VALUE = 'value';
 
     /**#@-*/
 
@@ -38,4 +39,15 @@ interface ItemAttributeInterface
      * @return $this
      */
     public function setLabel($label);
+
+    /**
+     * @return string
+     */
+    public function getValue();
+
+    /**
+     * @param string $value
+     * @return $this
+     */
+    public function setValue($value);
 }

@@ -23,4 +23,14 @@ class ItemAttribute extends \Magento\Framework\Api\AbstractSimpleObject implemen
     {
         return $this->setData(self::LABEL , $label);
     }
+
+    public function getValue()
+    {
+        return $this->_get(self::VALUE);
+    }
+
+    public function setValue($value)
+    {
+        return $this->setData(self::VALUE , $value);
+    }
 }

@@ -17,7 +17,7 @@ class ConstantsMapper
             case \Magento\Catalog\Model\Product\Type::TYPE_VIRTUAL:
                 $result = HelperConstants::ITEM_TYPE_VIRTUAL;
                 break;
-            case \Magento\Catalog\Model\Product\Type::TYPE_BUNDLE:
+            case \Magento\Bundle\Model\Product\Type::TYPE_CODE:
                 $result = HelperConstants::ITEM_TYPE_BUNDLE;
                 break;
             case \Magento\Downloadable\Model\Product\Type::TYPE_DOWNLOADABLE:

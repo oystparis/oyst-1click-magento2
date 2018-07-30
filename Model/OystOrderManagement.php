@@ -16,13 +16,14 @@ class OystOrderManagement extends AbstractOystManagement implements \Oyst\OneCli
         \Magento\Sales\Model\OrderFactory $orderFactory,
         \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
         \Magento\Customer\Api\Data\CustomerInterfaceFactory $customerDataFactory,
-        \Magento\Quote\Model\ResourceModel\Quote\CollectionFactory $quoteCollectionFactory
+        \Magento\Quote\Model\ResourceModel\Quote\CollectionFactory $quoteCollectionFactory,
+        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory
     )
     {
         $this->orderFactory = $orderFactory;
         $this->cartManagement = $cartManagement;
         $this->oystOrderBuilder = $oystOrderBuilder;
-        parent::__construct($customerRepository, $customerDataFactory, $quoteCollectionFactory);
+        parent::__construct($customerRepository, $customerDataFactory, $quoteCollectionFactory, $productCollectionFactory);
     }
 
     public function createOrderFromOystCheckout($oystId)

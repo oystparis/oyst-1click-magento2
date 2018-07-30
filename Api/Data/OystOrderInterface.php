@@ -121,12 +121,12 @@ interface OystOrderInterface
     public function setUserAdvantages($userAdvantages);
 
     /**
-     * @return \Oyst\OneClick\Api\Data\Common\ShippingInterface
+     * @return \Oyst\OneClick\Api\Data\OystOrder\ShippingInterface
      */
     public function getShipping();
 
     /**
-     * @param \Oyst\OneClick\Api\Data\Common\ShippingInterface $shipping
+     * @param \Oyst\OneClick\Api\Data\OystOrder\ShippingInterface $shipping
      * @return $this
      */
     public function setShipping($shipping);

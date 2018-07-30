@@ -31,9 +31,9 @@ class Synchronizer
     }
 
     public function syncMagentoQuote(
+        \Oyst\OneClick\Api\Data\OystCheckoutInterface $oystCheckout,
         \Magento\Quote\Model\Quote $quote,
-        \Magento\Customer\Api\Data\CustomerInterface $customer,
-        \Oyst\OneClick\Api\Data\OystCheckoutInterface $oystCheckout
+        \Magento\Customer\Api\Data\CustomerInterface $customer
     )
     {
         $this->cart->setQuote($quote);
@@ -52,12 +52,6 @@ class Synchronizer
         array $oystCheckoutItems
     )
     {
-        $productReferences = [];
-
-        foreach ($oystCheckoutItems as $item) {
-            $productReferences[] = ['ref' => $item->getReference(), 'qty' => $item->getQuantity()];
-        }
-
         $cartData = [];
 
         foreach ($quote->getAllItems() as $item) {
@@ -65,9 +59,9 @@ class Synchronizer
                 continue;
             }
 
-            foreach ($productReferences as $productReference) {
-                if ($item->getSku() == $productReference['ref']) {
-                    $cartData[$item->getId()]['qty'] = $productReference['qty'];
+            foreach ($oystCheckoutItems as $oystCheckoutItem) {
+                if ($item->getId() == $oystCheckoutItem->getInternalReference()) {
+                    $cartData[$item->getId()]['qty'] = $oystCheckoutItem->getQuantity();
                     break;
                 }
             }
@@ -109,7 +103,7 @@ class Synchronizer
     protected function syncMagentoAddresses(
         \Magento\Quote\Model\Quote $quote,
         \Oyst\OneClick\Api\Data\Common\BillingInterface $oystCheckoutBilling,
-        \Oyst\OneClick\Api\Data\Common\ShippingInterface $oystCheckoutShipping
+        \Oyst\OneClick\Api\Data\OystCheckout\ShippingInterface $oystCheckoutShipping
     )
     {
         /* @var Magento\Quote\Model\Quote\Address $billingAddress */

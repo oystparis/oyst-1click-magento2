@@ -11,17 +11,30 @@ use Magento\Framework\Setup\SchemaSetupInterface;
  */
 class UpgradeSchema implements UpgradeSchemaInterface
 {
+    protected $integrationService;
+    
+    protected $oauthService;
+    
+    public function __construct(
+        \Magento\Integration\Model\IntegrationService $integrationService,
+        \Magento\Integration\Model\OauthService $oauthService
+    )
+    {
+        $this->integrationService = $integrationService;
+        $this->oauthService = $oauthService;
+    }
+    
     /**
      * {@inheritdoc}
      */
     public function upgrade(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
         $setup->startSetup();
-        
-        if (version_compare($context->getVersion(), '1.0.0') < 0) {
+
+        if (version_compare($context->getVersion(), '0.0.1') < 0) {
             $setup->getConnection()->addColumn(
-                $setup->getTable('quote'), 
-                'oyst_id', 
+                $setup->getTable('quote'),
+                'oyst_id',
                 [
                     'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
                     'length' => 255,
@@ -29,10 +42,10 @@ class UpgradeSchema implements UpgradeSchemaInterface
                     'nullable' => true,
                 ]
             );
-            
+
             $setup->getConnection()->addColumn(
-                $setup->getTable('sales_order'), 
-                'oyst_id', 
+                $setup->getTable('sales_order'),
+                'oyst_id',
                 [
                     'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
                     'length' => 255,
@@ -41,7 +54,23 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 ]
             );
         }
-        
+
+        if (version_compare($context->getVersion(), '0.0.2') < 0) {
+            $integrationData = [
+                'name' => \Oyst\OneClick\Helper\Constants::INTEGRATION_NAME,
+                'resource' => [
+                    'Oyst_OneClick::apis',
+                    'Oyst_OneClick::config',
+                    'Oyst_OneClick::checkout',
+                    'Oyst_OneClick::order',
+                ],
+            ];
+
+            $integration = $this->integrationService->create($integrationData);
+            $this->oauthService->createAccessToken($integration->getConsumerId());
+            $integration->setStatus(\Magento\Integration\Model\Integration::STATUS_ACTIVE)->save();
+        }
+
         $setup->endSetup();
     }
 }

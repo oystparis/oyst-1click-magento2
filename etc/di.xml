@@ -32,4 +32,8 @@
     <preference for="Oyst\OneClick\Api\OystCheckoutManagementInterface" type="Oyst\OneClick\Model\OystCheckoutManagement"/>
     <preference for="Oyst\OneClick\Api\OystConfigManagementInterface" type="Oyst\OneClick\Model\OystConfigManagement"/>
     <preference for="Oyst\OneClick\Api\OystOrderManagementInterface" type="Oyst\OneClick\Model\OystOrderManagement"/>
+
+    <type name="Magento\Framework\App\Config\ScopeConfigInterface">
+        <plugin name="oystOneclickDisableRegionRequired" type="Oyst\OneClick\Plugin\Config\DisableRegionRequiredPlugin"/>
+    </type>
 </config>

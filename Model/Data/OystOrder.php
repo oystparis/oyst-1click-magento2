@@ -14,14 +14,14 @@ class OystOrder extends \Magento\Framework\Api\AbstractSimpleObject implements \
         return $this->setData(self::OYST_ID , $oystId);
     }
 
-    public function getReference()
+    public function getInternalId()
     {
-        return $this->_get(self::REFERENCE);
+        return $this->_get(self::INTERNAL_ID);
     }
 
-    public function setReference($reference)
+    public function setInternalId($internalId)
     {
-        return $this->setData(self::REFERENCE , $reference);
+        return $this->setData(self::INTERNAL_ID , $internalId);
     }
 
     public function getIp()

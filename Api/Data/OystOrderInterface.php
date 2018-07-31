@@ -13,7 +13,7 @@ interface OystOrderInterface
      */
 
     const OYST_ID = 'oyst_id';
-    const REFERENCE = 'reference';
+    const INTERNAL_ID = 'internal_id';
     const IP = 'ip';
     const USER = 'user';
     const ITEMS = 'items';
@@ -46,13 +46,13 @@ interface OystOrderInterface
     /**
      * @return string
      */
-    public function getReference();
+    public function getInternalId();
 
     /**
-     * @param string $reference
+     * @param string $internalId
      * @return $this
      */
-    public function setReference($reference);
+    public function setInternalId($internalId);
 
     /**
      * @return string

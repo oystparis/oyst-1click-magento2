@@ -23,6 +23,10 @@
                     <label>Enable Oyst OneClick</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                <field id="access_token" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Access Token</label>
+                    <frontend_model>Oyst\OneClick\Block\Adminhtml\System\Config\Form\AccessToken</frontend_model>
+                </field>
                 <field id="script_tag" translate="label" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Script Tag</label>
                     <comment><![CDATA[This field contains the script-tag used by Oyst OneClick to display his button and modal, notice that this field is populated by Oyst Back Office via Magento API.]]></comment>

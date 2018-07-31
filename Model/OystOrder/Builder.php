@@ -21,7 +21,7 @@ class Builder
         $oystOrder = $this->oystOrderFactory->create();
 
         $oystOrder->setOystId($order->getOystId());
-        $oystOrder->setReference($order->getIncrementId());
+        $oystOrder->setInternalId($order->getIncrementId());
 
         // TODO : All members
 

@@ -2,7 +2,7 @@
 
 namespace Oyst\OneClick\Model\Data\Common;
 
-class Coupon extends \Magento\Framework\Api\AbstractSimpleObject implements \Oyst\OneClick\Api\Data\Common\CounponInterface
+class Coupon extends \Magento\Framework\Api\AbstractSimpleObject implements \Oyst\OneClick\Api\Data\Common\CouponInterface
 {
     public function getCode()
     {

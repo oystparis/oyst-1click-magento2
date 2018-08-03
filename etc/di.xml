@@ -11,7 +11,7 @@
     <preference for="Oyst\OneClick\Api\Data\Common\AddressInterface" type="Oyst\OneClick\Model\Data\Common\Address"/>
     <preference for="Oyst\OneClick\Api\Data\Common\BillingInterface" type="Oyst\OneClick\Model\Data\Common\Billing"/>
     <preference for="Oyst\OneClick\Api\Data\Common\CountryInterface" type="Oyst\OneClick\Model\Data\Common\Country"/>
-    <preference for="Oyst\OneClick\Api\Data\Common\CounponInterface" type="Oyst\OneClick\Model\Data\Common\Coupon"/>
+    <preference for="Oyst\OneClick\Api\Data\Common\CouponInterface" type="Oyst\OneClick\Model\Data\Common\Coupon"/>
     <preference for="Oyst\OneClick\Api\Data\Common\DiscountInterface" type="Oyst\OneClick\Model\Data\Common\Discount"/>
     <preference for="Oyst\OneClick\Api\Data\Common\ItemInterface" type="Oyst\OneClick\Model\Data\Common\Item"/>
     <preference for="Oyst\OneClick\Api\Data\Common\ItemPriceInterface" type="Oyst\OneClick\Model\Data\Common\ItemPrice"/>

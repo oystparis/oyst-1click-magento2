@@ -14,6 +14,8 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
         \Oyst\OneClick\Api\Data\Common\AddressInterfaceFactory $oystCommonAddressFactory,
         \Oyst\OneClick\Api\Data\Common\BillingInterfaceFactory $oystCommonBillingFactory,
         \Oyst\OneClick\Api\Data\Common\CountryInterfaceFactory $oystCommonCountryFactory,
+        \Oyst\OneClick\Api\Data\Common\CouponInterfaceFactory $oystCommonCouponFactory,
+        \Oyst\OneClick\Api\Data\Common\DiscountInterfaceFactory $oystCommonDiscountFactory,
         \Oyst\OneClick\Api\Data\Common\ItemAttributeInterfaceFactory $oystCommonItemAttributeInterfaceFactory,
         \Oyst\OneClick\Api\Data\Common\ItemInterfaceFactory $oystCommonItemFactory,
         \Oyst\OneClick\Api\Data\Common\ItemPriceInterfaceFactory $oystCommonItemPriceFactory,
@@ -34,6 +36,8 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
             $oystCommonAddressFactory,
             $oystCommonBillingFactory,
             $oystCommonCountryFactory,
+            $oystCommonCouponFactory,
+            $oystCommonDiscountFactory,
             $oystCommonItemAttributeInterfaceFactory,
             $oystCommonItemFactory,
             $oystCommonItemPriceFactory,
@@ -68,6 +72,13 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
 
         if (!$quote->isVirtual()) {
             $oystCheckout->setShipping($this->buildOystCheckoutShipping($quote, $shippingMethods));
+            $oystCheckout->setDiscounts($this->buildOystCheckoutDiscounts($quote->getShippingAddress()->getTotals()));
+        } else {
+            $oystCheckout->setDiscounts($this->buildOystCheckoutDiscounts($quote->getBillingAddress()->getTotals()));
+        }
+
+        if ($quote->getCouponCode()) {
+            $oystCheckout->setCoupons($this->buildOystCheckoutCoupons($quote->getCouponCode()));
         }
 
         return $oystCheckout;
@@ -186,9 +197,9 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
         foreach ($configurableAttributes as $configurableAttribute) {
             /* @var $oystCheckoutItemAttribute \Oyst\OneClick\Api\Data\Common\ItemAttributeInterface */
             $oystCheckoutItemAttribute = $this->oystCommonItemAttributeInterfaceFactory->create();
-            
+
             $options = $configurableAttribute->getProductAttribute()->getSource()->getAllOptions(false);
-            
+
             $oystCheckoutItemAttribute->setCode($configurableAttribute->getProductAttribute()->getAttributeCode());
             $oystCheckoutItemAttribute->setLabel($configurableAttribute->getProductAttribute()->getStoreLabel());
             foreach ($configurableAttribute->getProductAttribute()->getSource()->getAllOptions(false) as $option) {
@@ -337,5 +348,36 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
         }
 
         return $oystCommonUser;
+    }
+
+    protected function buildOystCheckoutDiscounts(array $totals)
+    {
+        $oystCheckoutDiscounts = [];
+
+        foreach ($totals as $total) {
+            if ($total->getData('code') == 'discount') {
+                /* @var $oystCheckoutDiscount \Oyst\OneClick\Api\Data\Common\DiscountInterface */
+                $oystCheckoutDiscount = $this->oystCommonDiscountFactory->create();
+                $oystCheckoutDiscount->setLabel($total->getData('title')->__toString());
+                $oystCheckoutDiscount->setAmountTaxIncl($total->getData('value'));
+
+                $oystCheckoutDiscounts[] = $oystCheckoutDiscount;
+            }
+        }
+
+        return $oystCheckoutDiscounts;
+    }
+
+    protected function buildOystCheckoutCoupons($couponCode)
+    {
+        $oystCheckoutCoupons = [];
+
+        /* @var $oystCheckoutCoupon \Oyst\OneClick\Api\Data\Common\CouponInterface */
+        $oystCheckoutCoupon = $this->oystCommonCouponFactory->create();
+        $oystCheckoutCoupon->setCode($couponCode);
+
+        $oystCheckoutCoupons[] = $oystCheckoutCoupon;
+
+        return $oystCheckoutCoupons;
     }
 }

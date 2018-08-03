@@ -29,11 +29,17 @@ abstract class AbstractOystManagement
      */
     protected $coreRegistry;
 
+    /**
+     * @var \Magento\SalesRule\Model\CouponFactory
+     */
+    protected $couponFactory;
+
     public function __construct(
         \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
         \Magento\Customer\Api\Data\CustomerInterfaceFactory $customerDataFactory,
         \Magento\Quote\Model\ResourceModel\Quote\CollectionFactory $quoteCollectionFactory,
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
+        \Magento\SalesRule\Model\CouponFactory $couponFactory,
         \Magento\Framework\Registry $coreRegistry
     )
     {
@@ -41,6 +47,7 @@ abstract class AbstractOystManagement
         $this->customerDataFactory = $customerDataFactory;
         $this->quoteCollectionFactory = $quoteCollectionFactory;
         $this->productCollectionFactory = $productCollectionFactory;
+        $this->couponFactory = $couponFactory;
         $this->coreRegistry = $coreRegistry;
         $this->disableRegionRequired();
     }
@@ -71,6 +78,21 @@ abstract class AbstractOystManagement
             ->addFinalPrice();
     }
 
+    protected function getMagentoCoupon($oystCoupons)
+    {
+        if (empty($oystCoupons)) {
+            return $this->couponFactory->create();
+        } else {
+            foreach ($oystCoupons as $oystCoupon) {
+                $coupon = $this->couponFactory->create()->load($oystCoupon->getCode(), 'code');
+                if (!$coupon->getId()) {
+                    throw new \Exception('Invalid coupon code : '.$oystCoupon->getCode());
+                }
+                return $coupon;
+            }
+        }
+    }
+
     protected function disableRegionRequired()
     {
         $this->coreRegistry->register(
@@ -78,4 +100,3 @@ abstract class AbstractOystManagement
         );
     }
 }
-

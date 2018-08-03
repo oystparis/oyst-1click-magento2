@@ -24,6 +24,10 @@ abstract class AbstractBuilder
 
     protected $oystCommonShippingMethodFactory;
 
+    protected $oystCommonDiscountFactory;
+
+    protected $oystCommonCouponFactory;
+
     protected $oystCommonItemAttributeInterfaceFactory;
 
     protected $constantsMapper;
@@ -36,6 +40,8 @@ abstract class AbstractBuilder
         \Oyst\OneClick\Api\Data\Common\AddressInterfaceFactory $oystCommonAddressFactory,
         \Oyst\OneClick\Api\Data\Common\BillingInterfaceFactory $oystCommonBillingFactory,
         \Oyst\OneClick\Api\Data\Common\CountryInterfaceFactory $oystCommonCountryFactory,
+        \Oyst\OneClick\Api\Data\Common\CouponInterfaceFactory $oystCommonCouponFactory,
+        \Oyst\OneClick\Api\Data\Common\DiscountInterfaceFactory $oystCommonDiscountFactory,
         \Oyst\OneClick\Api\Data\Common\ItemAttributeInterfaceFactory $oystCommonItemAttributeInterfaceFactory,
         \Oyst\OneClick\Api\Data\Common\ItemInterfaceFactory $oystCommonItemFactory,
         \Oyst\OneClick\Api\Data\Common\ItemPriceInterfaceFactory $oystCommonItemPriceFactory,
@@ -59,6 +65,8 @@ abstract class AbstractBuilder
         $this->oystCommonBillingFactory = $oystCommonBillingFactory;
         $this->oystCommonShippingMethodFactory = $oystCommonShippingMethodFactory;
         $this->oystCommonItemAttributeInterfaceFactory = $oystCommonItemAttributeInterfaceFactory;
+        $this->oystCommonCouponFactory = $oystCommonCouponFactory;
+        $this->oystCommonDiscountFactory = $oystCommonDiscountFactory;
     }
 
     protected function buildOystCommonCountry($code, $label)

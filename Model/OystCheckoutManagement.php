@@ -39,6 +39,7 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
         \Magento\Customer\Api\Data\CustomerInterfaceFactory $customerDataFactory,
         \Magento\Quote\Model\ResourceModel\Quote\CollectionFactory $quoteCollectionFactory,
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
+        \Magento\SalesRule\Model\CouponFactory $couponFactory,
         \Magento\Framework\Registry $coreRegistry
     )
     {
@@ -52,6 +53,7 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
             $customerDataFactory,
             $quoteCollectionFactory,
             $productCollectionFactory,
+            $couponFactory,
             $coreRegistry
         );
     }
@@ -72,7 +74,9 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
         $quote = $this->quoteRepository->getActive($oystCheckout->getInternalId());
         /* @var Magento\Customer\Api\Data\CustomerInterface $customer */
         $customer = $this->getMagentoCustomer($oystCheckout->getUser()->getEmail());
-        $this->magentoQuoteSynchronizer->syncMagentoQuote($oystCheckout, $quote, $customer);
+        /* @var \Magento\SalesRule\Model\Coupon $coupon */
+        $coupon = $this->getMagentoCoupon($oystCheckout->getCoupons());
+        $this->magentoQuoteSynchronizer->syncMagentoQuote($oystCheckout, $quote, $customer, $coupon);
 
         if(!$quote->isVirtual()) {
             $this->resolveSetShippingMethodStrategy($quote, $oystCheckout->getShipping());

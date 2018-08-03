@@ -33,7 +33,8 @@ class Synchronizer
     public function syncMagentoQuote(
         \Oyst\OneClick\Api\Data\OystCheckoutInterface $oystCheckout,
         \Magento\Quote\Model\Quote $quote,
-        \Magento\Customer\Api\Data\CustomerInterface $customer
+        \Magento\Customer\Api\Data\CustomerInterface $customer,
+        \Magento\SalesRule\Model\Coupon $coupon
     )
     {
         $this->cart->setQuote($quote);
@@ -42,6 +43,7 @@ class Synchronizer
         $this->syncMagentoAddresses($quote, $oystCheckout->getBilling(), $oystCheckout->getShipping());
         $this->syncMagentoCustomer($quote, $customer, $oystCheckout->getUser());
         $this->syncMagentoQuoteItems($quote, $oystCheckout->getItems());
+        $this->syncMagentoCoupon($quote, $coupon);
         $this->syncMagentoPaymentMethod($quote);
 
         return true;
@@ -95,8 +97,15 @@ class Synchronizer
         return true;
     }
 
-    protected function syncMagentoCoupons()
+    protected function syncMagentoCoupon(
+        \Magento\Quote\Model\Quote $quote,
+        \Magento\SalesRule\Model\Coupon $coupon
+    )
     {
+        if ($coupon->getId()) {
+            $quote->setCouponCode($coupon->getCode());
+        }
+
         return true;
     }
 

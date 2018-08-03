@@ -18,6 +18,7 @@ class OystOrderManagement extends AbstractOystManagement implements \Oyst\OneCli
         \Magento\Customer\Api\Data\CustomerInterfaceFactory $customerDataFactory,
         \Magento\Quote\Model\ResourceModel\Quote\CollectionFactory $quoteCollectionFactory,
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
+        \Magento\SalesRule\Model\CouponFactory $couponFactory,
         \Magento\Framework\Registry $coreRegistry
     )
     {
@@ -29,6 +30,7 @@ class OystOrderManagement extends AbstractOystManagement implements \Oyst\OneCli
             $customerDataFactory, 
             $quoteCollectionFactory, 
             $productCollectionFactory, 
+            $couponFactory,
             $coreRegistry
         );
     }

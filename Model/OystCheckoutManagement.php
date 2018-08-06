@@ -40,7 +40,9 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
         \Magento\Quote\Model\ResourceModel\Quote\CollectionFactory $quoteCollectionFactory,
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
         \Magento\SalesRule\Model\CouponFactory $couponFactory,
-        \Magento\Framework\Registry $coreRegistry
+        \Magento\Framework\Registry $coreRegistry,
+        \Magento\Catalog\Helper\ImageFactory $imageFactory,
+        \Magento\Store\Model\App\Emulation $appEmulation
     )
     {
         $this->quoteRepository = $quoteRepository;
@@ -54,7 +56,9 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
             $quoteCollectionFactory,
             $productCollectionFactory,
             $couponFactory,
-            $coreRegistry
+            $coreRegistry,
+            $imageFactory,
+            $appEmulation
         );
     }
 
@@ -63,7 +67,10 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
         $quote = $this->quoteRepository->getActive($id);
         $totals = $this->cartTotalRepository->get($id);
         $shippingMethods = $this->getShippingMethodList($quote);
-        $products = $this->getMagenteProductsById(array_map(function($item) {return $item->getProductId();}, $quote->getAllItems()));
+        $products = $this->getMagenteProductsById(
+            array_map(function($item) {return $item->getProductId();}, $quote->getAllItems()),
+            $quote->getStoreId()
+        );
 
         return $this->oystCheckoutBuilder->buildOystCheckout($quote, $totals, $shippingMethods, $products);
     }

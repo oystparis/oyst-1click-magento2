@@ -10,6 +10,10 @@ class Constants
     const ITEM_TYPE_BUNDLE = 'bundle';
     const ITEM_TYPE_DOWNLOADABLE = 'downloadable';
 
+    const OYST_DISPLAY_NORMAL = 'normal';
+    const OYST_DISPLAY_FREE = 'free';
+    const OYST_DISPLAY_PROPOSAL = 'proposal';
+
     const CONFIG_PATH_OYST_CONFIG_SCRIPT_TAG = 'oyst_oneclick/general/script_tag';
 
     const INTEGRATION_NAME = 'Oyst OneClick';

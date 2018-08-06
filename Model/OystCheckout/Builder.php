@@ -2,6 +2,8 @@
 
 namespace Oyst\OneClick\Model\OystCheckout;
 
+use Oyst\OneClick\Helper\Constants as HelperConstants;
+
 class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
 {
     protected $oystCheckoutFactory;
@@ -11,6 +13,7 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
     public function __construct(
         \Magento\Framework\Event\ManagerInterface $eventManager,
         \Oyst\OneClick\Model\ConstantsMapper $constantsMapper,
+        \Oyst\OneClick\Helper\SalesRule $helperSalesRule,
         \Oyst\OneClick\Api\Data\Common\AddressInterfaceFactory $oystCommonAddressFactory,
         \Oyst\OneClick\Api\Data\Common\BillingInterfaceFactory $oystCommonBillingFactory,
         \Oyst\OneClick\Api\Data\Common\CountryInterfaceFactory $oystCommonCountryFactory,
@@ -33,6 +36,7 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
         parent::__construct(
             $eventManager,
             $constantsMapper,
+            $helperSalesRule,
             $oystCommonAddressFactory,
             $oystCommonBillingFactory,
             $oystCommonCountryFactory,
@@ -172,6 +176,12 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
         $oystCheckoutItem->setWeight($product->getWeight());
         $oystCheckoutItem->setQuantity($item->getQty());
         $oystCheckoutItem->setPrice($this->buildOystCheckoutItemPrice($item));
+        $oystCheckoutItem->setImage($product->getOystImageUrl());
+        if ($this->helperSalesRule->isItemFreeProduct($item)) {
+            $oystCheckoutItem->setOystDisplay(HelperConstants::OYST_DISPLAY_FREE);
+        } else {
+            $oystCheckoutItem->setOystDisplay(HelperConstants::OYST_DISPLAY_NORMAL);
+        }
 
         if (isset($childItems) && $item->getProductType() == \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE) {
             $this->addVariantInfosToOystCheckoutItem($oystCheckoutItem, $products, $item, $childItems[0]);

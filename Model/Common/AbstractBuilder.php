@@ -30,6 +30,8 @@ abstract class AbstractBuilder
 
     protected $oystCommonItemAttributeInterfaceFactory;
 
+    protected $helperSalesRule;
+
     protected $constantsMapper;
 
     protected $eventManager;
@@ -37,6 +39,7 @@ abstract class AbstractBuilder
     public function __construct(
         \Magento\Framework\Event\ManagerInterface $eventManager,
         \Oyst\OneClick\Model\ConstantsMapper $constantsMapper,
+        \Oyst\OneClick\Helper\SalesRule $helperSalesRule,
         \Oyst\OneClick\Api\Data\Common\AddressInterfaceFactory $oystCommonAddressFactory,
         \Oyst\OneClick\Api\Data\Common\BillingInterfaceFactory $oystCommonBillingFactory,
         \Oyst\OneClick\Api\Data\Common\CountryInterfaceFactory $oystCommonCountryFactory,
@@ -67,6 +70,7 @@ abstract class AbstractBuilder
         $this->oystCommonItemAttributeInterfaceFactory = $oystCommonItemAttributeInterfaceFactory;
         $this->oystCommonCouponFactory = $oystCommonCouponFactory;
         $this->oystCommonDiscountFactory = $oystCommonDiscountFactory;
+        $this->helperSalesRule = $helperSalesRule;
     }
 
     protected function buildOystCommonCountry($code, $label)

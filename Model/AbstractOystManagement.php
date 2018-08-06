@@ -34,13 +34,25 @@ abstract class AbstractOystManagement
      */
     protected $couponFactory;
 
+    /**
+     * @var \Magento\Catalog\Helper\ImageFactory
+     */
+    protected $imageFactory;
+
+    /**
+     * @var \Magento\Store\Model\App\Emulation
+     */
+    protected $appEmulation;
+
     public function __construct(
         \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
         \Magento\Customer\Api\Data\CustomerInterfaceFactory $customerDataFactory,
         \Magento\Quote\Model\ResourceModel\Quote\CollectionFactory $quoteCollectionFactory,
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
         \Magento\SalesRule\Model\CouponFactory $couponFactory,
-        \Magento\Framework\Registry $coreRegistry
+        \Magento\Framework\Registry $coreRegistry,
+        \Magento\Catalog\Helper\ImageFactory $imageFactory,
+        \Magento\Store\Model\App\Emulation $appEmulation
     )
     {
         $this->customerRepository = $customerRepository;
@@ -49,6 +61,8 @@ abstract class AbstractOystManagement
         $this->productCollectionFactory = $productCollectionFactory;
         $this->couponFactory = $couponFactory;
         $this->coreRegistry = $coreRegistry;
+        $this->imageFactory = $imageFactory;
+        $this->appEmulation = $appEmulation;
         $this->disableRegionRequired();
     }
 
@@ -70,12 +84,20 @@ abstract class AbstractOystManagement
             ->getFirstItem();
     }
 
-    protected function getMagenteProductsById($ids)
+    protected function getMagenteProductsById($ids, $storeId)
     {
-        return $this->productCollectionFactory->create()
+        $products = $this->productCollectionFactory->create()
             ->addAttributeToFilter('entity_id', ['in' => $ids])
             ->addAttributeToSelect('*')
             ->addFinalPrice();
+
+        foreach ($products as $product) {
+            $this->appEmulation->startEnvironmentEmulation($storeId, \Magento\Framework\App\Area::AREA_FRONTEND, true);
+            $product->setOystImageUrl($this->imageFactory->create()->init($product, 'cart_page_product_thumbnail')->getUrl());
+            $this->appEmulation->stopEnvironmentEmulation();
+        }
+
+        return $products;
     }
 
     protected function getMagentoCoupon($oystCoupons)

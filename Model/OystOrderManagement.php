@@ -19,7 +19,9 @@ class OystOrderManagement extends AbstractOystManagement implements \Oyst\OneCli
         \Magento\Quote\Model\ResourceModel\Quote\CollectionFactory $quoteCollectionFactory,
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
         \Magento\SalesRule\Model\CouponFactory $couponFactory,
-        \Magento\Framework\Registry $coreRegistry
+        \Magento\Framework\Registry $coreRegistry,
+        \Magento\Catalog\Helper\ImageFactory $imageFactory,
+        \Magento\Store\Model\App\Emulation $appEmulation
     )
     {
         $this->orderFactory = $orderFactory;
@@ -31,7 +33,9 @@ class OystOrderManagement extends AbstractOystManagement implements \Oyst\OneCli
             $quoteCollectionFactory, 
             $productCollectionFactory, 
             $couponFactory,
-            $coreRegistry
+            $coreRegistry,
+            $imageFactory,
+            $appEmulation
         );
     }
 

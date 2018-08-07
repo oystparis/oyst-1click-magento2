@@ -42,7 +42,8 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
         \Magento\SalesRule\Model\CouponFactory $couponFactory,
         \Magento\Framework\Registry $coreRegistry,
         \Magento\Catalog\Helper\ImageFactory $imageFactory,
-        \Magento\Store\Model\App\Emulation $appEmulation
+        \Magento\Store\Model\App\Emulation $appEmulation,
+        \Magento\Framework\Event\ManagerInterface $eventManager
     )
     {
         $this->quoteRepository = $quoteRepository;
@@ -58,7 +59,8 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
             $couponFactory,
             $coreRegistry,
             $imageFactory,
-            $appEmulation
+            $appEmulation,
+            $eventManager
         );
     }
 
@@ -67,7 +69,7 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
         $quote = $this->quoteRepository->getActive($id);
         $totals = $this->cartTotalRepository->get($id);
         $shippingMethods = $this->getShippingMethodList($quote);
-        $products = $this->getMagenteProductsById(
+        $products = $this->getMagentoProductsById(
             array_map(function($item) {return $item->getProductId();}, $quote->getAllItems()),
             $quote->getStoreId()
         );
@@ -168,6 +170,8 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
             return [];
         }
 
+        $oldItems = $quote->getShippingAddress()->getData('cached_items_all');
+
         $items = [];
         foreach($quote->getAllItems() as $item) {
             if ($item->getData('parent_item_id')) {
@@ -178,6 +182,10 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
         $quote->getShippingAddress()->setData('cached_items_all', $items);
         $quote->getShippingAddress()->setCollectShippingRates(true);
 
-        return $this->shippingMethodManagement->getList($quote->getId());
+        $result = $this->shippingMethodManagement->getList($quote->getId());
+
+        $quote->getShippingAddress()->setData('cached_items_all', $oldItems);
+
+        return $result;
     }
 }

@@ -44,6 +44,11 @@ abstract class AbstractOystManagement
      */
     protected $appEmulation;
 
+    /**
+     * @var \Magento\Framework\Event\ManagerInterface
+     */
+    protected $eventManager;
+
     public function __construct(
         \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
         \Magento\Customer\Api\Data\CustomerInterfaceFactory $customerDataFactory,
@@ -52,7 +57,8 @@ abstract class AbstractOystManagement
         \Magento\SalesRule\Model\CouponFactory $couponFactory,
         \Magento\Framework\Registry $coreRegistry,
         \Magento\Catalog\Helper\ImageFactory $imageFactory,
-        \Magento\Store\Model\App\Emulation $appEmulation
+        \Magento\Store\Model\App\Emulation $appEmulation,
+        \Magento\Framework\Event\ManagerInterface $eventManager
     )
     {
         $this->customerRepository = $customerRepository;
@@ -63,6 +69,7 @@ abstract class AbstractOystManagement
         $this->coreRegistry = $coreRegistry;
         $this->imageFactory = $imageFactory;
         $this->appEmulation = $appEmulation;
+        $this->eventManager = $eventManager;
         $this->disableRegionRequired();
     }
 
@@ -84,12 +91,18 @@ abstract class AbstractOystManagement
             ->getFirstItem();
     }
 
-    protected function getMagenteProductsById($ids, $storeId)
+    protected function getMagentoProductsById($ids, $storeId)
     {
         $products = $this->productCollectionFactory->create()
             ->addAttributeToFilter('entity_id', ['in' => $ids])
             ->addAttributeToSelect('*')
+            ->setStore($storeId)
             ->addFinalPrice();
+
+        $this->eventManager->dispatch(
+            'oyst_oneclick_model_oyst_management_get_magento_products_by_id',
+            ['products' => $products, 'store_id' => $storeId]
+        );
 
         foreach ($products as $product) {
             $this->appEmulation->startEnvironmentEmulation($storeId, \Magento\Framework\App\Area::AREA_FRONTEND, true);

@@ -21,7 +21,8 @@ class OystOrderManagement extends AbstractOystManagement implements \Oyst\OneCli
         \Magento\SalesRule\Model\CouponFactory $couponFactory,
         \Magento\Framework\Registry $coreRegistry,
         \Magento\Catalog\Helper\ImageFactory $imageFactory,
-        \Magento\Store\Model\App\Emulation $appEmulation
+        \Magento\Store\Model\App\Emulation $appEmulation,
+        \Magento\Framework\Event\ManagerInterface $eventManager
     )
     {
         $this->orderFactory = $orderFactory;
@@ -35,7 +36,8 @@ class OystOrderManagement extends AbstractOystManagement implements \Oyst\OneCli
             $couponFactory,
             $coreRegistry,
             $imageFactory,
-            $appEmulation
+            $appEmulation,
+            $eventManager
         );
     }
 

@@ -8,6 +8,8 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
 {
     protected $oystCheckoutFactory;
 
+    protected $oystCheckoutItemFactory;
+
     protected $oystCheckoutShippingFactory;
 
     public function __construct(
@@ -20,7 +22,6 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
         \Oyst\OneClick\Api\Data\Common\CouponInterfaceFactory $oystCommonCouponFactory,
         \Oyst\OneClick\Api\Data\Common\DiscountInterfaceFactory $oystCommonDiscountFactory,
         \Oyst\OneClick\Api\Data\Common\ItemAttributeInterfaceFactory $oystCommonItemAttributeInterfaceFactory,
-        \Oyst\OneClick\Api\Data\Common\ItemInterfaceFactory $oystCommonItemFactory,
         \Oyst\OneClick\Api\Data\Common\ItemPriceInterfaceFactory $oystCommonItemPriceFactory,
         \Oyst\OneClick\Api\Data\Common\ShippingMethodInterfaceFactory $oystCommonShippingMethodFactory,
         \Oyst\OneClick\Api\Data\Common\ShopInterfaceFactory $oystCommonShopFactory,
@@ -28,10 +29,12 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
         \Oyst\OneClick\Api\Data\Common\TotalsInterfaceFactory $oystCommonTotalsFactory,
         \Oyst\OneClick\Api\Data\Common\UserInterfaceFactory $oystCommonUserFactory,
         \Oyst\OneClick\Api\Data\OystCheckoutInterfaceFactory $oystCheckoutFactory,
+        \Oyst\OneClick\Api\Data\OystCheckout\ItemInterfaceFactory $oystCheckoutItemFactory,
         \Oyst\OneClick\Api\Data\OystCheckout\ShippingInterfaceFactory $oystCheckoutShippingFactory
     )
     {
         $this->oystCheckoutFactory = $oystCheckoutFactory;
+        $this->oystCheckoutItemFactory = $oystCheckoutItemFactory;
         $this->oystCheckoutShippingFactory = $oystCheckoutShippingFactory;
         parent::__construct(
             $eventManager,
@@ -43,7 +46,6 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
             $oystCommonCouponFactory,
             $oystCommonDiscountFactory,
             $oystCommonItemAttributeInterfaceFactory,
-            $oystCommonItemFactory,
             $oystCommonItemPriceFactory,
             $oystCommonShippingMethodFactory,
             $oystCommonShopFactory,
@@ -164,8 +166,8 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
         /* @var $item \Magento\Quote\Model\Quote\Item */
         /* @var $childItems \Magento\Quote\Model\Quote\Item[] */
         $product = $products->getItemById($item->getProductId());
-        /* @var $oystCheckoutItem \Oyst\OneClick\Api\Data\Common\ItemInterface */
-        $oystCheckoutItem = $this->oystCommonItemFactory->create();
+        /* @var $oystCheckoutItem \Oyst\OneClick\Api\Data\OystCheckout\ItemInterface */
+        $oystCheckoutItem = $this->oystCheckoutItemFactory->create();
 
         $oystCheckoutItem->setName($item->getName());
         $oystCheckoutItem->setType($this->constantsMapper->mapMagentoProductTypeToOystCheckoutItemType($item->getProductType()));

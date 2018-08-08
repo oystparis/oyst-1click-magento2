@@ -10,8 +10,6 @@ abstract class AbstractBuilder
 
     protected $oystCommonShopFactory;
 
-    protected $oystCommonItemFactory;
-
     protected $oystCommonItemPriceFactory;
 
     protected $oystCommonTotalsFactory;
@@ -46,7 +44,6 @@ abstract class AbstractBuilder
         \Oyst\OneClick\Api\Data\Common\CouponInterfaceFactory $oystCommonCouponFactory,
         \Oyst\OneClick\Api\Data\Common\DiscountInterfaceFactory $oystCommonDiscountFactory,
         \Oyst\OneClick\Api\Data\Common\ItemAttributeInterfaceFactory $oystCommonItemAttributeInterfaceFactory,
-        \Oyst\OneClick\Api\Data\Common\ItemInterfaceFactory $oystCommonItemFactory,
         \Oyst\OneClick\Api\Data\Common\ItemPriceInterfaceFactory $oystCommonItemPriceFactory,
         \Oyst\OneClick\Api\Data\Common\ShippingMethodInterfaceFactory $oystCommonShippingMethodFactory,
         \Oyst\OneClick\Api\Data\Common\ShopInterfaceFactory $oystCommonShopFactory,
@@ -60,7 +57,6 @@ abstract class AbstractBuilder
         $this->oystCommonUserFactory = $oystCommonUserFactory;
         $this->oystCommonCountryFactory = $oystCommonCountryFactory;
         $this->oystCommonShopFactory = $oystCommonShopFactory;
-        $this->oystCommonItemFactory = $oystCommonItemFactory;
         $this->oystCommonItemPriceFactory = $oystCommonItemPriceFactory;
         $this->oystCommonTotalsFactory = $oystCommonTotalsFactory;
         $this->oystCommonTotalDetailsFactory = $oystCommonTotalDetailsFactory;

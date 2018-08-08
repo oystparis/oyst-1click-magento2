@@ -76,12 +76,12 @@ interface OystCheckoutInterface
     public function setUser($user);
 
     /**
-     * @return \Oyst\OneClick\Api\Data\Common\ItemInterface[]
+     * @return \Oyst\OneClick\Api\Data\OystCheckout\ItemInterface[]
      */
     public function getItems();
 
     /**
-     * @param \Oyst\OneClick\Api\Data\Common\ItemInterface $items
+     * @param \Oyst\OneClick\Api\Data\OystCheckout\ItemInterface[] $items
      * @return $this
      */
     public function setItems($items);
@@ -109,12 +109,12 @@ interface OystCheckoutInterface
     public function setCoupons($coupons);
 
     /**
-     * @return \Oyst\OneClick\Api\Data\Common\UserAdvantagesInterface[]|null
+     * @return \Oyst\OneClick\Api\Data\OystCheckout\UserAdvantagesInterface[]|null
      */
     public function getUserAdvantages();
 
     /**
-     * @param \Oyst\OneClick\Api\Data\Common\UserAdvantagesInterface[] $userAdvantages
+     * @param \Oyst\OneClick\Api\Data\OystCheckout\UserAdvantagesInterface[] $userAdvantages
      * @return $this
      */
     public function setUserAdvantages($userAdvantages);

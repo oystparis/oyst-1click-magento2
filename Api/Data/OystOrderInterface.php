@@ -77,12 +77,12 @@ interface OystOrderInterface
     public function setUser($user);
 
     /**
-     * @return \Oyst\OneClick\Api\Data\Common\ItemInterface[]
+     * @return \Oyst\OneClick\Api\Data\OystOrder\ItemInterface[]
      */
     public function getItems();
 
     /**
-     * @param \Oyst\OneClick\Api\Data\Common\ItemInterface $items
+     * @param \Oyst\OneClick\Api\Data\OystOrder\ItemInterface[] $items
      * @return $this
      */
     public function setItems($items);
@@ -110,12 +110,12 @@ interface OystOrderInterface
     public function setCoupons($coupons);
 
     /**
-     * @return \Oyst\OneClick\Api\Data\Common\UserAdvantagesInterface[]|null
+     * @return \Oyst\OneClick\Api\Data\OystOrder\UserAdvantagesInterface[]|null
      */
     public function getUserAdvantages();
 
     /**
-     * @param \Oyst\OneClick\Api\Data\Common\UserAdvantagesInterface[] $userAdvantages
+     * @param \Oyst\OneClick\Api\Data\OystOrder\UserAdvantagesInterface[] $userAdvantages
      * @return $this
      */
     public function setUserAdvantages($userAdvantages);
@@ -209,13 +209,13 @@ interface OystOrderInterface
     public function setUpdatedAt($updatedAt);
 
     /**
-     * @return \Oyst\OneClick\Api\Data\OystOrder\StatusInterface
+     * @return \Oyst\OneClick\Api\Data\Common\OrderStatusInterface
      */
     public function getStatus();
 
     /**
-     * @param \Oyst\OneClick\Api\Data\OystOrder\StatusInterface $status
+     * @param \Oyst\OneClick\Api\Data\Common\OrderInterface $orderStatus
      * @return $this
      */
-    public function setStatus($totals);
+    public function setStatus($orderStatus);
 }

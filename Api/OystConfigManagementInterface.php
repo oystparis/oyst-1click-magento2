@@ -12,4 +12,9 @@ interface OystConfigManagementInterface
      * @return bool
      */
     public function saveOystConfigScriptTag($scriptTag);
+
+    /**
+     * @return \Oyst\OneClick\Api\Data\OystConfigInterface
+     */
+    public function getOystConfig();
 }

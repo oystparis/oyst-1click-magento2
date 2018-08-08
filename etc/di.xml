@@ -1,22 +1,27 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="Oyst\OneClick\Api\Data\OystCheckoutInterface" type="Oyst\OneClick\Model\Data\OystCheckout"/>
-    <preference for="Oyst\OneClick\Api\Data\OystCheckout\ShippingInterface" type="Oyst\OneClick\Model\Data\OystCheckout\Shipping"/>
     <preference for="Oyst\OneClick\Api\Data\OystCheckout\AgreementInterface" type="Oyst\OneClick\Model\Data\OystCheckout\Agreement"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\ItemInterface" type="Oyst\OneClick\Model\Data\OystCheckout\Item"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\ShippingInterface" type="Oyst\OneClick\Model\Data\OystCheckout\Shipping"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\UserAdvantagesInterface" type="Oyst\OneClick\Model\Data\OystCheckout\UserAdvantages"/>
 
     <preference for="Oyst\OneClick\Api\Data\OystOrderInterface" type="Oyst\OneClick\Model\Data\OystOrder"/>
+    <preference for="Oyst\OneClick\Api\Data\OystOrder\ItemInterface" type="Oyst\OneClick\Model\Data\OystOrder\Item"/>
     <preference for="Oyst\OneClick\Api\Data\OystOrder\ShippingInterface" type="Oyst\OneClick\Model\Data\OystOrder\Shipping"/>
-    <preference for="Oyst\OneClick\Api\Data\OystOrder\StatusInterface" type="Oyst\OneClick\Model\Data\OystOrder\Status"/>
+    <preference for="Oyst\OneClick\Api\Data\OystOrder\UserAdvantagesInterface" type="Oyst\OneClick\Model\Data\OystOrder\UserAdvantages"/>
+
+    <preference for="Oyst\OneClick\Api\Data\OystConfigInterface" type="Oyst\OneClick\Model\Data\OystConfig"/>
 
     <preference for="Oyst\OneClick\Api\Data\Common\AddressInterface" type="Oyst\OneClick\Model\Data\Common\Address"/>
     <preference for="Oyst\OneClick\Api\Data\Common\BillingInterface" type="Oyst\OneClick\Model\Data\Common\Billing"/>
     <preference for="Oyst\OneClick\Api\Data\Common\CountryInterface" type="Oyst\OneClick\Model\Data\Common\Country"/>
     <preference for="Oyst\OneClick\Api\Data\Common\CouponInterface" type="Oyst\OneClick\Model\Data\Common\Coupon"/>
     <preference for="Oyst\OneClick\Api\Data\Common\DiscountInterface" type="Oyst\OneClick\Model\Data\Common\Discount"/>
-    <preference for="Oyst\OneClick\Api\Data\Common\ItemInterface" type="Oyst\OneClick\Model\Data\Common\Item"/>
     <preference for="Oyst\OneClick\Api\Data\Common\ItemPriceInterface" type="Oyst\OneClick\Model\Data\Common\ItemPrice"/>
     <preference for="Oyst\OneClick\Api\Data\Common\ItemAttributeInterface" type="Oyst\OneClick\Model\Data\Common\ItemAttribute"/>
     <preference for="Oyst\OneClick\Api\Data\Common\KeyValueInterface" type="Oyst\OneClick\Model\Data\Common\KeyValue"/>
+    <preference for="Oyst\OneClick\Api\Data\Common\OrderStatusInterface" type="Oyst\OneClick\Model\Data\Common\OrderStatus"/>
     <preference for="Oyst\OneClick\Api\Data\Common\MessageInterface" type="Oyst\OneClick\Model\Data\Common\Message"/>
     <preference for="Oyst\OneClick\Api\Data\Common\ShippingInterface" type="Oyst\OneClick\Model\Data\Common\Shipping"/>
     <preference for="Oyst\OneClick\Api\Data\Common\ShippingMethodInterface" type="Oyst\OneClick\Model\Data\Common\ShippingMethod"/>
@@ -25,7 +30,6 @@
     <preference for="Oyst\OneClick\Api\Data\Common\TotalTaxInterface" type="Oyst\OneClick\Model\Data\Common\TotalTax"/>
     <preference for="Oyst\OneClick\Api\Data\Common\TotalsInterface" type="Oyst\OneClick\Model\Data\Common\Totals"/>
     <preference for="Oyst\OneClick\Api\Data\Common\UserInterface" type="Oyst\OneClick\Model\Data\Common\User"/>
-    <preference for="Oyst\OneClick\Api\Data\Common\UserAdvantagesInterface" type="Oyst\OneClick\Model\Data\Common\UserAdvantages"/>
     <preference for="Oyst\OneClick\Api\Data\Common\UserAdvantagesBalanceInterface" type="Oyst\OneClick\Model\Data\Common\UserAdvantagesBalance"/>
     <preference for="Oyst\OneClick\Api\Data\Common\UserAdvantagesFidelityPointInterface" type="Oyst\OneClick\Model\Data\Common\UserAdvantagesFidelityPoint"/>
 

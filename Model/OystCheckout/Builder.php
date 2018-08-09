@@ -195,7 +195,7 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
     }
 
     protected function addVariantInfosToOystCheckoutItem(
-        \Oyst\OneClick\Api\Data\Common\ItemInterface $oystCheckoutItem,
+        \Oyst\OneClick\Api\Data\OystCheckout\ItemInterface $oystCheckoutItem,
         \Magento\Catalog\Model\ResourceModel\Product\Collection $products,
         \Magento\Quote\Model\Quote\Item $item,
         \Magento\Quote\Model\Quote\Item $childItem
@@ -228,7 +228,7 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
     }
 
     protected function addBundleInfosToOystCheckoutItem(
-        \Oyst\OneClick\Api\Data\Common\ItemInterface $oystCheckoutItem,
+        \Oyst\OneClick\Api\Data\OystCheckout\ItemInterface $oystCheckoutItem,
         \Magento\Catalog\Model\ResourceModel\Product\Collection $products,
         array $childItems
     )

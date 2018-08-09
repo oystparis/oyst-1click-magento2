@@ -15,6 +15,7 @@ class Constants
     const OYST_DISPLAY_PROPOSAL = 'proposal';
 
     const CONFIG_PATH_OYST_CONFIG_SCRIPT_TAG = 'oyst_oneclick/general/script_tag';
+    const CONFIG_PATH_OYST_CONFIG_CREATE_CUSTOMER_ON_OYST_ORDER = 'oyst_oneclick/general/create_customer_on_oyst_order';
 
     const INTEGRATION_NAME = 'Oyst OneClick';
 

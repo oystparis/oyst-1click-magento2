@@ -31,6 +31,10 @@
                     <label>Script Tag</label>
                     <comment><![CDATA[This field contains the script-tag used by Oyst OneClick to display his button and modal, notice that this field is populated by Oyst Back Office via Magento API.]]></comment>
                 </field>
+                <field id="create_customer_on_oyst_order" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Create Customer On Oyst Order</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
             </group>
         </section>
         <section id="payment">

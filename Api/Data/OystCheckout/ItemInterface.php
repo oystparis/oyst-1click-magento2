@@ -283,12 +283,12 @@ interface ItemInterface
     public function setDiscounts($discounts);
     
     /**
-     * @return \Oyst\OneClick\Api\Data\Common\ItemInterface[]|null
+     * @return \Oyst\OneClick\Api\Data\OystCheckout\ItemInterface[]|null
      */
     public function getChildItems();
 
     /**
-     * @param \Oyst\OneClick\Api\Data\Common\ItemInterface[] $childItems
+     * @param \Oyst\OneClick\Api\Data\OystCheckout\ItemInterface[] $childItems
      * @return $this
      */
     public function setChildItems($childItems);

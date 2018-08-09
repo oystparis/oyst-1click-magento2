@@ -19,7 +19,7 @@ script:
   ## PHP CodeSniffer disable error on exit
   - vendor/bin/phpcs --config-set ignore_warnings_on_exit 1
   ## PHP Copy/Paste Detector
-  - vendor/bin/phpcpd --exclude vendor,app/code/Oyst/OneClick/Api/Data,app/code/Oyst/OneClick/Model/Data $TRAVIS_BUILD_DIR
+  ##- vendor/bin/phpcpd --exclude vendor $TRAVIS_BUILD_DIR
   ## PHP Mess Detector
   - vendor/bin/phpmd $TRAVIS_BUILD_DIR text cleancode,codesize,controversial,design,naming,unusedcode --exclude vendor --ignore-violations-on-exit
   ## PHPLOC

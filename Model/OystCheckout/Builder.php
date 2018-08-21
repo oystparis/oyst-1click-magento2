@@ -274,6 +274,7 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
         $oystCheckoutAddress->setStreet2($address->getStreetLine(2));
         $oystCheckoutAddress->setPhoneMobile($address->getTelephone());
         $oystCheckoutAddress->setPhone($address->getTelephone());
+        $oystCheckoutAddress->setCompany($address->getCompany());
 
         return $oystCheckoutAddress;
     }

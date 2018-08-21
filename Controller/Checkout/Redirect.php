@@ -11,13 +11,16 @@ class Redirect extends \Magento\Framework\App\Action\Action
     protected $orderFactory;
 
     protected $orderCustomerService;
-    
+
     protected $logger;
 
     protected $scopeConfig;
-    
+
+    protected $customerRepository;
+
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
+        \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
         \Magento\Customer\Model\Session $customerSession,
         \Magento\Checkout\Model\Session $checkoutSession,
         \Magento\Sales\Api\OrderCustomerManagementInterface $orderCustomerService,
@@ -33,6 +36,7 @@ class Redirect extends \Magento\Framework\App\Action\Action
         $this->orderCustomerService = $orderCustomerService;
         $this->logger = $logger;
         $this->scopeConfig = $scopeConfig;
+        $this->customerRepository = $customerRepository;
     }
 
     public function execute()
@@ -53,7 +57,7 @@ class Redirect extends \Magento\Framework\App\Action\Action
                 }
             } else {
                 if ($this->scopeConfig->isSetFlag(\Oyst\OneClick\Helper\Constants::CONFIG_PATH_OYST_CONFIG_CREATE_CUSTOMER_ON_OYST_ORDER)) {
-                    $account = $this->orderCustomerService->create($order->getId());
+                    $account = $this->handleCustomerAccountCreationFromOrder($order);
                     $this->customerSession->loginById($account->getId());
                 }
             }
@@ -65,5 +69,19 @@ class Redirect extends \Magento\Framework\App\Action\Action
         $resultRedirect = $this->resultRedirectFactory->create();
         $resultRedirect->setPath('checkout/onepage/success');
         return $resultRedirect;
+    }
+
+    protected function handleCustomerAccountCreationFromOrder($order)
+    {
+        $account = $this->orderCustomerService->create($order->getId());
+
+        if ($account->getFirstname() != $order->getCustomerFirstname()
+         || $account->getLastname() != $order->getCustomerLastname()) {
+            $account->setLastname($order->getCustomerLastname());
+            $account->setFirstname($order->getCustomerFirstname());
+            $this->customerRepository->save($account);
+        }
+
+        return $account;
     }
 }

@@ -20,4 +20,6 @@ class Constants
     const INTEGRATION_NAME = 'Oyst OneClick';
 
     const DISABLE_REGION_REQUIRED_REGISTRY_KEY = 'oyst_oneclick_disable_region_required';
+
+    const MERCHANT_ID_PLACEHOLDER = '[MERCHANT_ID_PLACEHOLDER]';
 }

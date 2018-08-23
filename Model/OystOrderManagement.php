@@ -41,9 +41,9 @@ class OystOrderManagement extends AbstractOystManagement implements \Oyst\OneCli
         );
     }
 
-    public function createOrderFromOystCheckout($oystId)
+    public function createOrderFromOystCheckout(\Oyst\OneClick\Api\Data\OystOrderInterface $oystOrder)
     {
-        $quote = $this->getMagentoQuoteByOystId($oystId);
+        $quote = $this->getMagentoQuoteByOystId($oystOrder->getOystId());
 
         if (!$quote->getId()) {
             throw new \Exception('Quote is not available.');
@@ -51,7 +51,7 @@ class OystOrderManagement extends AbstractOystManagement implements \Oyst\OneCli
 
         $this->cartManagement->placeOrder($quote->getId());
 
-        return $this->getOystOrderFromMagentoOrder($oystId);
+        return $this->getOystOrderFromMagentoOrder($oystOrder->getOystId());
     }
 
     public function getOystOrderFromMagentoOrder($oystId)

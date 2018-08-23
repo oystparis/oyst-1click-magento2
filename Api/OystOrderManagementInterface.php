@@ -8,8 +8,8 @@ namespace Oyst\OneClick\Api;
 interface OystOrderManagementInterface
 {
     /**
-     * @param string $oystId
+     * @param \Oyst\OneClick\Api\Data\OystOrderInterface $oystOrder
      * @return \Oyst\OneClick\Api\Data\OystOrderInterface
      */
-    public function createOrderFromOystCheckout($oystId);
+    public function createOrderFromOystCheckout(\Oyst\OneClick\Api\Data\OystOrderInterface $oystOrder);
 }

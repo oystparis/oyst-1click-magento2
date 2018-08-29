@@ -17,9 +17,9 @@ class OystConfigManagement implements \Oyst\OneClick\Api\OystConfigManagementInt
     protected $cacheManager;
 
     /**
-     * @var \Oyst\OneClick\Model\OystConfig\Builder
+     * @var \Oyst\OneClick\Model\OystConfig\Ecommerce\Builder
      */
-    protected $oystConfigBuilder;
+    protected $oystConfigEcommerceBuilder;
 
     /**
      * @var \Magento\Shipping\Model\Config\Source\Allmethods
@@ -44,7 +44,7 @@ class OystConfigManagement implements \Oyst\OneClick\Api\OystConfigManagementInt
     public function __construct(
         \Magento\Config\Model\PreparedValueFactory $preparedValueFactory,
         \Magento\Framework\App\Cache\Manager $cacheManager,
-        \Oyst\OneClick\Model\OystConfig\Builder $oystConfigBuilder,
+        \Oyst\OneClick\Model\OystConfig\Ecommerce\Builder $oystConfigEcommerceBuilder,
         \Magento\Shipping\Model\Config\Source\Allmethods $configShippingMethods,
         \Magento\Directory\Model\AllowedCountries $configAllowedCountries,
         \Magento\Directory\Model\ResourceModel\Country\CollectionFactory $countryCollectionFactory,
@@ -53,18 +53,26 @@ class OystConfigManagement implements \Oyst\OneClick\Api\OystConfigManagementInt
     {
         $this->preparedValueFactory = $preparedValueFactory;
         $this->cacheManager = $cacheManager;
-        $this->oystConfigBuilder = $oystConfigBuilder;
+        $this->oystConfigEcommerceBuilder = $oystConfigEcommerceBuilder;
         $this->configShippingMethods = $configShippingMethods;
         $this->configAllowedCountries = $configAllowedCountries;
         $this->countryCollectionFactory = $countryCollectionFactory;
         $this->orderConfig = $orderConfig;
     }
 
-    public function saveOystConfigScriptTag($scriptTag)
+    public function saveOystConfig(\Oyst\OneClick\Api\Data\OystConfig\OystInterface $oystConfig)
     {
         /* @var \Magento\Framework\App\Config\Value $backendModel */
         $backendModel = $this->preparedValueFactory->create(
-            HelperConstants::CONFIG_PATH_OYST_CONFIG_SCRIPT_TAG, $scriptTag, 'default'
+            HelperConstants::CONFIG_PATH_OYST_CONFIG_SCRIPT_TAG, $oystConfig->getScriptTag(), 'default'
+        );
+        if ($backendModel instanceof \Magento\Framework\App\Config\Value) {
+            $resourceModel = $backendModel->getResource();
+            $resourceModel->save($backendModel);
+        }
+
+        $backendModel = $this->preparedValueFactory->create(
+            HelperConstants::CONFIG_PATH_OYST_CONFIG_MERCHANT_ID, $oystConfig->getMerchantId(), 'default'
         );
         if ($backendModel instanceof \Magento\Framework\App\Config\Value) {
             $resourceModel = $backendModel->getResource();
@@ -76,7 +84,7 @@ class OystConfigManagement implements \Oyst\OneClick\Api\OystConfigManagementInt
         return true;
     }
 
-    public function getOystConfig()
+    public function getEcommerceConfig()
     {
         $carriers = $this->configShippingMethods->toOptionArray(true);
         array_shift($carriers);
@@ -87,7 +95,7 @@ class OystConfigManagement implements \Oyst\OneClick\Api\OystConfigManagementInt
 
         $orderStatuses = $this->orderConfig->getStatuses();
 
-        return $this->oystConfigBuilder->buildOystConfig(
+        return $this->oystConfigEcommerceBuilder->buildOystConfigEcommerce(
             $carriers,
             $countries,
             $orderStatuses

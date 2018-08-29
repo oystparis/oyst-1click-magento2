@@ -8,13 +8,13 @@ namespace Oyst\OneClick\Api;
 interface OystConfigManagementInterface
 {
     /**
-     * @param string $scriptTag
+     * @param \Oyst\OneClick\Api\Data\OystConfig\OystInterface $oystConfig
      * @return bool
      */
-    public function saveOystConfigScriptTag($scriptTag);
+    public function saveOystConfig(\Oyst\OneClick\Api\Data\OystConfig\OystInterface $oystConfig);
 
     /**
-     * @return \Oyst\OneClick\Api\Data\OystConfigInterface
+     * @return \Oyst\OneClick\Api\Data\OystConfig\EcommerceInterface
      */
-    public function getOystConfig();
+    public function getEcommerceConfig();
 }

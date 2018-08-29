@@ -1,8 +1,8 @@
 <?php
 
-namespace Oyst\OneClick\Model\Data;
+namespace Oyst\OneClick\Model\Data\OystConfig;
 
-class OystConfig extends \Magento\Framework\Api\AbstractSimpleObject implements \Oyst\OneClick\Api\Data\OystConfigInterface
+class Ecommerce extends \Magento\Framework\Api\AbstractSimpleObject implements \Oyst\OneClick\Api\Data\OystConfig\EcommerceInterface
 {
     public function getShippingMethods()
     {

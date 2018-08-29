@@ -1,12 +1,12 @@
 <?php
 
-namespace Oyst\OneClick\Api\Data;
+namespace Oyst\OneClick\Api\Data\OystConfig;
 
 /**
- * Interface OystConfigInterface
+ * Interface EcommerceInterface
  * @api
  */
-interface OystConfigInterface
+interface EcommerceInterface
 {
     /**#@+
      * Constants defined for keys of array, makes typos less likely

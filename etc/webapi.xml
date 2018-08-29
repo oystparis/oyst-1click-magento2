@@ -16,15 +16,15 @@
         </resources>
     </route>
     
-    <route url="/V1/oyst-oneclick/config/script-tag" method="PUT">
-        <service class="Oyst\OneClick\Api\OystConfigManagementInterface" method="saveOystConfigScriptTag"/>
+    <route url="/V1/oyst-oneclick/config/oyst" method="PUT">
+        <service class="Oyst\OneClick\Api\OystConfigManagementInterface" method="saveOystConfig"/>
         <resources>
             <resource ref="Oyst_OneClick::config" />
         </resources>
     </route>
 
-    <route url="/V1/oyst-oneclick/config" method="GET">
-        <service class="Oyst\OneClick\Api\OystConfigManagementInterface" method="getOystConfig"/>
+    <route url="/V1/oyst-oneclick/config/ecommerce" method="GET">
+        <service class="Oyst\OneClick\Api\OystConfigManagementInterface" method="getEcommerceConfig"/>
         <resources>
             <resource ref="Oyst_OneClick::config" />
         </resources>

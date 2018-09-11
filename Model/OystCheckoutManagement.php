@@ -79,18 +79,20 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
 
     public function syncMagentoQuoteWithOystCheckout($oystId, \Oyst\OneClick\Api\Data\OystCheckoutInterface $oystCheckout)
     {
-        /* @var Magento\Quote\Model\Quote $quote */
+        /* @var \Magento\Quote\Model\Quote $quote */
         $quote = $this->quoteRepository->getActive($oystCheckout->getInternalId());
-        /* @var Magento\Customer\Api\Data\CustomerInterface $customer */
+        /* @var \Magento\Customer\Api\Data\CustomerInterface $customer */
         $customer = $this->getMagentoCustomer($oystCheckout->getUser()->getEmail());
         /* @var \Magento\SalesRule\Model\Coupon $coupon */
         $coupon = $this->getMagentoCoupon($oystCheckout->getCoupons());
         $this->magentoQuoteSynchronizer->syncMagentoQuote($oystCheckout, $quote, $customer, $coupon);
 
         if(!$quote->isVirtual()) {
-            $this->resolveSetShippingMethodStrategy($quote, $oystCheckout->getShipping());
+            $quote->setTotalsCollectedFlag(false)->collectTotals();
+            /* @var array $methodsAvailable */
+            $methodsAvailable = $this->getShippingMethodList($quote);
+            $this->resolveSetShippingMethodStrategy($quote->getShippingAddress(), $methodsAvailable, $oystCheckout->getShipping());
         }
-        $this->resolveCustomerCreationStrategy($customer, $oystCheckout->getUser());
 
         $quote->setTotalsCollectedFlag(false)->collectTotals();
         $this->quoteRepository->save($quote);
@@ -101,19 +103,17 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
     /**
      * Business logic : if shipping method requested by Oyst OneClick is available after all quote recalculations,
      * then set it else use the cheapeast shipping method available.
-     * @param \Magento\Quote\Model\Quote $quote
+     * @param \Magento\Quote\Model\Quote\Address $shippingAddress
+     * @param array $methodsAvailable
      * @param \Oyst\OneClick\Api\Data\OystCheckout\ShippingInterface $oystCheckoutShipping
      * @return $this
      */
-    protected function resolveSetShippingMethodStrategy(
-        \Magento\Quote\Model\Quote $quote,
+    public function resolveSetShippingMethodStrategy(
+        \Magento\Quote\Model\Quote\Address $shippingAddress,
+        array $methodsAvailable,
         \Oyst\OneClick\Api\Data\OystCheckout\ShippingInterface $oystCheckoutShipping
     )
     {
-        $quote->setTotalsCollectedFlag(false)->collectTotals();
-
-        $methodsAvailable = $this->getShippingMethodList($quote);
-
         $isRequestedShippingMethodAvailable = false;
         $shippingMethod = null;
         if ($oystCheckoutShipping->getMethodApplied()) {
@@ -142,24 +142,8 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
             }
         }
 
-        $quote->getShippingAddress()->setShippingMethod($shippingMethod);
+        $shippingAddress->setShippingMethod($shippingMethod);
         return $this;
-    }
-
-    /**
-     * Business logic : if customer sent by Oyst OneClick does not exist,
-     * then check if we have to create it.
-     * @param \Magento\Customer\Api\Data\CustomerInterface $customer
-     * @param \Oyst\OneClick\Api\Data\Common\UserInterface $oystCheckoutUser
-     * @return boolean
-     */
-    protected function resolveCustomerCreationStrategy(
-        \Magento\Customer\Api\Data\CustomerInterface $customer,
-        \Oyst\OneClick\Api\Data\Common\UserInterface $oystCheckoutUser
-    )
-    {
-        // TODO
-        return true;
     }
 
     protected function getShippingMethodList(

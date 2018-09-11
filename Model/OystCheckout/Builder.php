@@ -72,12 +72,12 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
 
         $oystCheckout->setUser($this->buildOystCheckoutUser($quote->getCustomer(), $quote));
         $oystCheckout->setTotals($this->buildOystCheckoutTotals($totals));
-        $oystCheckout->setBilling($this->buildOystCheckoutBilling($quote));
+        $oystCheckout->setBilling($this->buildOystCheckoutBilling($quote->getBillingAddress()));
         $oystCheckout->setItems($this->buildOystCheckoutItemsFacade($quote->getAllItems(), $products));
         $oystCheckout->setShop($this->buildOystCommonShop($quote->getStore()));
 
         if (!$quote->isVirtual()) {
-            $oystCheckout->setShipping($this->buildOystCheckoutShipping($quote, $shippingMethods));
+            $oystCheckout->setShipping($this->buildOystCheckoutShipping($quote->getShippingAddress(), $shippingMethods));
             $oystCheckout->setDiscounts($this->buildOystCheckoutDiscounts($quote->getShippingAddress()->getTotals()));
         } else {
             $oystCheckout->setDiscounts($this->buildOystCheckoutDiscounts($quote->getBillingAddress()->getTotals()));
@@ -174,7 +174,6 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
         $oystCheckoutItem->setDescriptionShort($product->getShortDescription());
         $oystCheckoutItem->setReference($item->getSku());
         $oystCheckoutItem->setInternalReference($item->getId());
-        $oystCheckoutItem->setImage($product->getImage());
         $oystCheckoutItem->setWeight($product->getWeight());
         $oystCheckoutItem->setQuantity($item->getQty());
         $oystCheckoutItem->setPrice($this->buildOystCheckoutItemPrice($item));
@@ -209,8 +208,6 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
         foreach ($configurableAttributes as $configurableAttribute) {
             /* @var $oystCheckoutItemAttribute \Oyst\OneClick\Api\Data\Common\ItemAttributeInterface */
             $oystCheckoutItemAttribute = $this->oystCommonItemAttributeInterfaceFactory->create();
-
-            $options = $configurableAttribute->getProductAttribute()->getSource()->getAllOptions(false);
 
             $oystCheckoutItemAttribute->setCode($configurableAttribute->getProductAttribute()->getAttributeCode());
             $oystCheckoutItemAttribute->setLabel($configurableAttribute->getProductAttribute()->getStoreLabel());
@@ -280,28 +277,28 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
     }
 
     protected function buildOystCheckoutBilling(
-        \Magento\Quote\Model\Quote $quote
+        \Magento\Quote\Model\Quote\Address $billingAddress
     )
     {
         /* @var $oystCheckoutBilling \Oyst\OneClick\Api\Data\Common\BillingInterface */
         $oystCheckoutBilling = $this->oystCommonBillingFactory->create();
 
-        $oystCheckoutBilling->setAddress($this->buildOystCheckoutAddress($quote->getBillingAddress()));
+        $oystCheckoutBilling->setAddress($this->buildOystCheckoutAddress($billingAddress));
 
         return $oystCheckoutBilling;
     }
 
     protected function buildOystCheckoutShipping(
-        \Magento\Quote\Model\Quote $quote,
+        \Magento\Quote\Model\Quote\Address $shippingAddress,
         array $shippingMethods
     )
     {
         /* @var $oystCheckoutShipping \Oyst\OneClick\Api\Data\OystCheckout\ShippingInterface */
         $oystCheckoutShipping = $this->oystCheckoutShippingFactory->create();
 
-        $oystCheckoutShipping->setAddress($this->buildOystCheckoutAddress($quote->getShippingAddress()));
+        $oystCheckoutShipping->setAddress($this->buildOystCheckoutAddress($shippingAddress));
         $oystCheckoutShipping->setMethodsAvailable($this->buildOystCheckoutShippingMethodsAvailable($shippingMethods));
-        $oystCheckoutShipping->setMethodApplied($this->buildOystCheckoutShippingMethodApplied($quote->getShippingAddress()->getShippingMethod(), $shippingMethods));
+        $oystCheckoutShipping->setMethodApplied($this->buildOystCheckoutShippingMethodApplied($shippingAddress->getShippingMethod(), $shippingMethods));
 
         return $oystCheckoutShipping;
     }

@@ -132,7 +132,6 @@ class Synchronizer
         $shippingAddress->setSaveInAddressBook(false);
         $shippingAddress->setShouldIgnoreValidation(true);
 
-        //Mage::dispatchEvent('oyst_oneclick_model_magento_quote_sync_addresses_after', array('quote' => $this->quote, 'request' => $this->apiData));
         return true;
     }
 

@@ -11,5 +11,18 @@ interface OystOrderManagementInterface
      * @param \Oyst\OneClick\Api\Data\OystOrderInterface $oystOrder
      * @return \Oyst\OneClick\Api\Data\OystOrderInterface
      */
-    public function createOrderFromOystCheckout(\Oyst\OneClick\Api\Data\OystOrderInterface $oystOrder);
+    public function createMagentoOrderFromOystCheckout(\Oyst\OneClick\Api\Data\OystOrderInterface $oystOrder);
+    
+    /**
+     * @return \Oyst\OneClick\Api\Data\OystOrderInterface
+     */
+    public function getOystOrderFromMagentoOrder($oystId);
+    
+    /**
+     * @param string $oystId
+     * @param string $oystApiStatus
+     * @param \Oyst\OneClick\Api\Data\OystOrderInterface $oystOrder
+     * @return \Oyst\OneClick\Api\Data\OystOrderInterface
+     */
+    public function syncMagentoOrderWithOystOrderStatus($oystId, \Oyst\OneClick\Api\Data\OystOrderInterface $oystOrder);
 }

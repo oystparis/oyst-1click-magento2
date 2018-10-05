@@ -15,7 +15,7 @@
             <resource ref="Oyst_OneClick::checkout" />
         </resources>
     </route>
-    
+
     <route url="/V1/oyst-oneclick/config/oyst" method="PUT">
         <service class="Oyst\OneClick\Api\OystConfigManagementInterface" method="saveOystConfig"/>
         <resources>
@@ -31,7 +31,14 @@
     </route>
 
     <route url="/V1/oyst-oneclick/order" method="POST">
-        <service class="Oyst\OneClick\Api\OystOrderManagementInterface" method="createOrderFromOystCheckout"/>
+        <service class="Oyst\OneClick\Api\OystOrderManagementInterface" method="createMagentoOrderFromOystCheckout"/>
+        <resources>
+            <resource ref="Oyst_OneClick::order" />
+        </resources>
+    </route>
+
+    <route url="/V1/oyst-oneclick/order/:oystId/status" method="PUT">
+        <service class="Oyst\OneClick\Api\OystOrderManagementInterface" method="syncMagentoOrderWithOystOrderStatus"/>
         <resources>
             <resource ref="Oyst_OneClick::order" />
         </resources>

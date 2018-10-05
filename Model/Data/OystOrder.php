@@ -104,6 +104,16 @@ class OystOrder extends \Magento\Framework\Api\AbstractSimpleObject implements \
         return $this->setData(self::BILLING , $billing);
     }
 
+    public function getPayment()
+    {
+        return $this->_get(self::PAYMENT);
+    }
+
+    public function setPayment($payment)
+    {
+        return $this->setData(self::PAYMENT , $payment);
+    }
+    
     public function getShop()
     {
         return $this->_get(self::SHOP);
@@ -172,5 +182,15 @@ class OystOrder extends \Magento\Framework\Api\AbstractSimpleObject implements \
     public function setUpdatedAt($updatedAt)
     {
         return $this->setData(self::UPDATED_AT , $updatedAt);
+    }
+
+    public function getAdditionalData()
+    {
+        return $this->_get(self::ADDITIONAL_DATA);
+    }
+
+    public function setAdditionalData($additionalData)
+    {
+        return $this->setData(self::ADDITIONAL_DATA , $additionalData);
     }
 }

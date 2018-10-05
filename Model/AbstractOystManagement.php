@@ -48,6 +48,11 @@ abstract class AbstractOystManagement
      * @var \Magento\Framework\Event\ManagerInterface
      */
     protected $eventManager;
+    
+    /**
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     */
+    protected $scopeConfig;
 
     public function __construct(
         \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
@@ -58,7 +63,8 @@ abstract class AbstractOystManagement
         \Magento\Framework\Registry $coreRegistry,
         \Magento\Catalog\Helper\ImageFactory $imageFactory,
         \Magento\Store\Model\App\Emulation $appEmulation,
-        \Magento\Framework\Event\ManagerInterface $eventManager
+        \Magento\Framework\Event\ManagerInterface $eventManager,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     )
     {
         $this->customerRepository = $customerRepository;
@@ -70,6 +76,7 @@ abstract class AbstractOystManagement
         $this->imageFactory = $imageFactory;
         $this->appEmulation = $appEmulation;
         $this->eventManager = $eventManager;
+        $this->scopeConfig = $scopeConfig;
         $this->disableRegionRequired();
     }
 
@@ -82,7 +89,7 @@ abstract class AbstractOystManagement
         }
     }
 
-    protected function getMagentoQuoteByOystId($oystId)
+    public function getMagentoQuoteByOystId($oystId)
     {
         return $this->quoteCollectionFactory->create()
             ->addFieldToFilter('oyst_id', $oystId)
@@ -91,7 +98,7 @@ abstract class AbstractOystManagement
             ->getFirstItem();
     }
 
-    protected function getMagentoProductsById($ids, $storeId)
+    public function getMagentoProductsById($ids, $storeId)
     {
         $products = $this->productCollectionFactory->create()
             ->addAttributeToFilter('entity_id', ['in' => $ids])
@@ -113,7 +120,7 @@ abstract class AbstractOystManagement
         return $products;
     }
 
-    protected function getMagentoCoupon($oystCoupons)
+    public function getMagentoCoupon($oystCoupons)
     {
         if (empty($oystCoupons)) {
             return $this->couponFactory->create();
@@ -133,5 +140,25 @@ abstract class AbstractOystManagement
         $this->coreRegistry->register(
             \Oyst\OneClick\Helper\Constants::DISABLE_REGION_REQUIRED_REGISTRY_KEY, true
         );
+    }
+
+    protected function getAdditionalDataFromOystObject($oystObject, $key = null)
+    {
+        $additionalData = $oystObject->getAdditionalData();
+
+        if ($key == null) {
+            return $additionalData;
+        } else {
+            $result = null;
+
+            foreach ($additionalData as $keyValuePair) {
+                if ($keyValuePair['key'] = $key) {
+                    $result = $keyValuePair['value'];
+                    break;
+                }
+            }
+
+            return $result;
+        }
     }
 }

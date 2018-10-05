@@ -79,6 +79,23 @@ class OystConfigManagement implements \Oyst\OneClick\Api\OystConfigManagementInt
             $resourceModel->save($backendModel);
         }
 
+        $endpoints = [];
+        foreach($oystConfig->getEndpoints() as $endpoint) {
+            $endpoints[] = [
+                'url' => $endpoint->getUrl(),
+                'type' => $endpoint->getType(),
+                'api_key' => $endpoint->getApiKey(),
+            ];
+        }
+
+        $backendModel = $this->preparedValueFactory->create(
+            HelperConstants::CONFIG_PATH_OYST_CONFIG_ENDPOINTS, json_encode($endpoints), 'default'
+        );
+        if ($backendModel instanceof \Magento\Framework\App\Config\Value) {
+            $resourceModel = $backendModel->getResource();
+            $resourceModel->save($backendModel);
+        }
+
         $this->cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
 
         return true;

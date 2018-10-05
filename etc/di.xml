@@ -3,11 +3,13 @@
     <preference for="Oyst\OneClick\Api\Data\OystCheckoutInterface" type="Oyst\OneClick\Model\Data\OystCheckout"/>
     <preference for="Oyst\OneClick\Api\Data\OystCheckout\AgreementInterface" type="Oyst\OneClick\Model\Data\OystCheckout\Agreement"/>
     <preference for="Oyst\OneClick\Api\Data\OystCheckout\ItemInterface" type="Oyst\OneClick\Model\Data\OystCheckout\Item"/>
+    <preference for="Oyst\OneClick\Api\Data\OystCheckout\PaymentInterface" type="Oyst\OneClick\Model\Data\OystCheckout\Payment"/>
     <preference for="Oyst\OneClick\Api\Data\OystCheckout\ShippingInterface" type="Oyst\OneClick\Model\Data\OystCheckout\Shipping"/>
     <preference for="Oyst\OneClick\Api\Data\OystCheckout\UserAdvantagesInterface" type="Oyst\OneClick\Model\Data\OystCheckout\UserAdvantages"/>
 
     <preference for="Oyst\OneClick\Api\Data\OystOrderInterface" type="Oyst\OneClick\Model\Data\OystOrder"/>
     <preference for="Oyst\OneClick\Api\Data\OystOrder\ItemInterface" type="Oyst\OneClick\Model\Data\OystOrder\Item"/>
+    <preference for="Oyst\OneClick\Api\Data\OystOrder\PaymentInterface" type="Oyst\OneClick\Model\Data\OystOrder\Payment"/>
     <preference for="Oyst\OneClick\Api\Data\OystOrder\ShippingInterface" type="Oyst\OneClick\Model\Data\OystOrder\Shipping"/>
     <preference for="Oyst\OneClick\Api\Data\OystOrder\UserAdvantagesInterface" type="Oyst\OneClick\Model\Data\OystOrder\UserAdvantages"/>
 
@@ -25,6 +27,7 @@
     <preference for="Oyst\OneClick\Api\Data\Common\KeyValueInterface" type="Oyst\OneClick\Model\Data\Common\KeyValue"/>
     <preference for="Oyst\OneClick\Api\Data\Common\OrderStatusInterface" type="Oyst\OneClick\Model\Data\Common\OrderStatus"/>
     <preference for="Oyst\OneClick\Api\Data\Common\MessageInterface" type="Oyst\OneClick\Model\Data\Common\Message"/>
+    <preference for="Oyst\OneClick\Api\Data\Common\PaymentTransactionInterface" type="Oyst\OneClick\Model\Data\Common\PaymentTransaction"/>
     <preference for="Oyst\OneClick\Api\Data\Common\ShippingInterface" type="Oyst\OneClick\Model\Data\Common\Shipping"/>
     <preference for="Oyst\OneClick\Api\Data\Common\ShippingMethodInterface" type="Oyst\OneClick\Model\Data\Common\ShippingMethod"/>
     <preference for="Oyst\OneClick\Api\Data\Common\ShopInterface" type="Oyst\OneClick\Model\Data\Common\Shop"/>
@@ -41,5 +44,9 @@
 
     <type name="Magento\Framework\App\Config\ScopeConfigInterface">
         <plugin name="oystOneclickDisableRegionRequired" type="Oyst\OneClick\Plugin\Config\DisableRegionRequiredPlugin"/>
+    </type>
+    
+    <type name="Magento\Quote\Observer\Webapi\SubmitObserver">
+        <plugin name="oystOneclickPreventAutoSendOrderEmailPlugin" type="Oyst\OneClick\Plugin\Quote\PreventAutoSendOrderEmailPlugin"/>
     </type>
 </config>

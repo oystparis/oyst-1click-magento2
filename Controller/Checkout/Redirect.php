@@ -8,7 +8,9 @@ class Redirect extends \Magento\Framework\App\Action\Action
 
     protected $checkoutSession;
 
-    protected $orderFactory;
+    protected $oystOrderManagement;
+
+    protected $quoteRepository;
 
     protected $orderCustomerService;
 
@@ -18,31 +20,38 @@ class Redirect extends \Magento\Framework\App\Action\Action
 
     protected $customerRepository;
 
+    protected $orderEmailSender;
+
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
         \Magento\Customer\Model\Session $customerSession,
         \Magento\Checkout\Model\Session $checkoutSession,
         \Magento\Sales\Api\OrderCustomerManagementInterface $orderCustomerService,
-        \Magento\Sales\Model\OrderFactory $orderFactory,
+        \Oyst\OneClick\Model\OystOrderManagement $oystOrderManagement,
+        \Magento\Quote\Model\QuoteRepository $quoteRepository,
+        \Magento\Sales\Model\Order\Email\Sender\OrderSender $orderEmailSender,
         \Psr\Log\LoggerInterface $logger,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     )
     {
         parent::__construct($context);
         $this->checkoutSession = $checkoutSession;
-        $this->orderFactory = $orderFactory;
+        $this->oystOrderManagement = $oystOrderManagement;
+        $this->quoteRepository = $quoteRepository;
         $this->customerSession = $customerSession;
         $this->orderCustomerService = $orderCustomerService;
         $this->logger = $logger;
         $this->scopeConfig = $scopeConfig;
         $this->customerRepository = $customerRepository;
+        $this->orderEmailSender = $orderEmailSender;
     }
 
     public function execute()
     {
         $quoteId = $this->checkoutSession->getOystOneClickQuoteId(true);
-        $order = $this->orderFactory->create()->load($quoteId, 'quote_id');
+        $quote = $this->quoteRepository->getActive($quoteId);
+        $order = $this->oystOrderManagement->getMagentoOrderByQuoteId($quote->getId());
 
         $this->checkoutSession->setLastQuoteId($quoteId);
         $this->checkoutSession->setLastSuccessQuoteId($quoteId);
@@ -50,6 +59,17 @@ class Redirect extends \Magento\Framework\App\Action\Action
         $this->checkoutSession->setLastRealOrderId($order->getIncrementId());
         $this->checkoutSession->setLastOrderStatus($order->getStatus());
 
+        $this->handleDeactivateQuote($quote);
+        $this->handleCustomerRedirectFromOrder($order);
+        $this->handleSendNewOrderEmail($order);
+
+        $resultRedirect = $this->resultRedirectFactory->create();
+        $resultRedirect->setPath('checkout/onepage/success');
+        return $resultRedirect;
+    }
+
+    protected function handleCustomerRedirectFromOrder($order)
+    {
         try {
             if ($order->getCustomerId()) {
                 if (!$this->customerSession->isLoggedIn()) {
@@ -57,7 +77,15 @@ class Redirect extends \Magento\Framework\App\Action\Action
                 }
             } else {
                 if ($this->scopeConfig->isSetFlag(\Oyst\OneClick\Helper\Constants::CONFIG_PATH_OYST_CONFIG_CREATE_CUSTOMER_ON_OYST_ORDER)) {
-                    $account = $this->handleCustomerAccountCreationFromOrder($order);
+                    $account = $this->orderCustomerService->create($order->getId());
+
+                    if ($account->getFirstname() != $order->getCustomerFirstname()
+                     || $account->getLastname() != $order->getCustomerLastname()) {
+                        $account->setLastname($order->getCustomerLastname());
+                        $account->setFirstname($order->getCustomerFirstname());
+                        $this->customerRepository->save($account);
+                    }
+
                     $this->customerSession->loginById($account->getId());
                 }
             }
@@ -65,23 +93,27 @@ class Redirect extends \Magento\Framework\App\Action\Action
             // Handle non blocking behaviour
             $this->logger->critical($e);
         }
-
-        $resultRedirect = $this->resultRedirectFactory->create();
-        $resultRedirect->setPath('checkout/onepage/success');
-        return $resultRedirect;
     }
 
-    protected function handleCustomerAccountCreationFromOrder($order)
+    protected function handleDeactivateQuote($quote)
     {
-        $account = $this->orderCustomerService->create($order->getId());
+        $quote->setIsActive(false);
+        $this->quoteRepository->save($quote);
 
-        if ($account->getFirstname() != $order->getCustomerFirstname()
-         || $account->getLastname() != $order->getCustomerLastname()) {
-            $account->setLastname($order->getCustomerLastname());
-            $account->setFirstname($order->getCustomerFirstname());
-            $this->customerRepository->save($account);
+        return $this;
+    }
+
+    protected function handleSendNewOrderEmail($order)
+    {
+        if ($order->getCanSendNewEmailFlag()) {
+            try {
+                $this->orderSender->send($order);
+            } catch (\Exception $e) {
+                // Handle non blocking behaviour
+                $this->logger->critical($e);
+            }
         }
 
-        return $account;
+        return $this;
     }
 }

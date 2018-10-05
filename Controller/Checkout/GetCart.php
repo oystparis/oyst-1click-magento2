@@ -1,6 +1,6 @@
 <?php
 
-namespace Oyst\OneClick\Controller\Init;
+namespace Oyst\OneClick\Controller\Checkout;
 
 class GetCart extends \Magento\Checkout\Controller\Cart
 {

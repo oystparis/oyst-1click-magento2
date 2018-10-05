@@ -43,7 +43,8 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
         \Magento\Framework\Registry $coreRegistry,
         \Magento\Catalog\Helper\ImageFactory $imageFactory,
         \Magento\Store\Model\App\Emulation $appEmulation,
-        \Magento\Framework\Event\ManagerInterface $eventManager
+        \Magento\Framework\Event\ManagerInterface $eventManager,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     )
     {
         $this->quoteRepository = $quoteRepository;
@@ -60,7 +61,8 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
             $coreRegistry,
             $imageFactory,
             $appEmulation,
-            $eventManager
+            $eventManager,
+            $scopeConfig
         );
     }
 

@@ -22,6 +22,7 @@ interface OystOrderInterface
     const USER_ADVANTAGES = 'user_advantages';
     const SHIPPING = 'shipping';
     const BILLING = 'billing';
+    const PAYMENT = 'payment';
     const SHOP = 'shop';
     const MESSAGES = 'messages';
     const CURRENCY = 'currency';
@@ -29,6 +30,7 @@ interface OystOrderInterface
     const STATUS = 'status';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
+    const ADDITIONAL_DATA = 'additional_data';
 
     /**#@-*/
 
@@ -143,6 +145,17 @@ interface OystOrderInterface
     public function setBilling($billing);
 
     /**
+     * @return \Oyst\OneClick\Api\Data\OystOrder\PaymentInterface
+     */
+    public function getPayment();
+
+    /**
+     * @param \Oyst\OneClick\Api\Data\OystOrder\PaymentInterface $payment
+     * @return $this
+     */
+    public function setPayment($payment);
+
+    /**
      * @return \Oyst\OneClick\Api\Data\Common\ShopInterface
      */
     public function getShop();
@@ -218,4 +231,15 @@ interface OystOrderInterface
      * @return $this
      */
     public function setStatus($orderStatus);
+
+    /**
+     * @return \Oyst\OneClick\Api\Data\Common\KeyValueInterface[]|null
+     */
+    public function getAdditionalData();
+
+    /**
+     * @param \Oyst\OneClick\Api\Data\Common\KeyValueInterface[] $additionalData
+     * @return $this
+     */
+    public function setAdditionalData($additionalData);
 }

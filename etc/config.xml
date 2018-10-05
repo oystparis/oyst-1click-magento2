@@ -5,7 +5,7 @@
         <payment>
             <oyst_oneclick>
                 <model>Oyst\OneClick\Model\Payment\Method\OneClick</model>
-                <order_status>pending</order_status>
+                <order_status>oyst_payment_waiting_validation</order_status>
                 <title>Oyst OneClick</title>
             </oyst_oneclick>
         </payment>

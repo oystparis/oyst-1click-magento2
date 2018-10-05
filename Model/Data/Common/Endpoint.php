@@ -23,4 +23,14 @@ class Endpoint extends \Magento\Framework\Api\AbstractSimpleObject implements \O
     {
         return $this->setData(self::TYPE , $type);
     }
+
+    public function getApiKey()
+    {
+        return $this->_get(self::API_KEY);
+    }
+
+    public function setApiKey($apiKey)
+    {
+        return $this->setData(self::API_KEY , $apiKey);
+    }
 }

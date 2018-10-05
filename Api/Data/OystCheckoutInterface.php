@@ -22,12 +22,13 @@ interface OystCheckoutInterface
     const USER_ADVANTAGES = 'user_advantages';
     const SHIPPING = 'shipping';
     const BILLING = 'billing';
+    const PAYMENT = 'payment';
     const SHOP = 'shop';
     const MESSAGES = 'messages';
     const AGREEMENTS = 'agreements';
     const CURRENCY = 'currency';
     const TOTALS = 'totals';
-    const CONTEXT = 'context';
+    const ADDITIONAL_DATA = 'additional_data';
 
     /**#@-*/
 
@@ -142,6 +143,17 @@ interface OystCheckoutInterface
     public function setBilling($billing);
 
     /**
+     * @return \Oyst\OneClick\Api\Data\OystCheckout\PaymentInterface
+     */
+    public function getPayment();
+
+    /**
+     * @param \Oyst\OneClick\Api\Data\OystCheckout\PaymentInterface $payment
+     * @return $this
+     */
+    public function setPayment($payment);
+
+    /**
      * @return \Oyst\OneClick\Api\Data\Common\ShopInterface
      */
     public function getShop();
@@ -199,11 +211,11 @@ interface OystCheckoutInterface
     /**
      * @return \Oyst\OneClick\Api\Data\Common\KeyValueInterface[]|null
      */
-    public function getContext();
+    public function getAdditionalData();
 
     /**
-     * @param \Oyst\OneClick\Api\Data\Common\KeyValueInterface[] $context
+     * @param \Oyst\OneClick\Api\Data\Common\KeyValueInterface[] $additionalData
      * @return $this
      */
-    public function setContext($context);
+    public function setAdditionalData($additionalData);
 }

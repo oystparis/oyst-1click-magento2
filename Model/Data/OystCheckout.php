@@ -23,7 +23,7 @@ class OystCheckout extends \Magento\Framework\Api\AbstractSimpleObject implement
     {
         return $this->setData(self::INTERNAL_ID , $internalId);
     }
-    
+
     public function getIp()
     {
         return $this->_get(self::IP);
@@ -104,6 +104,16 @@ class OystCheckout extends \Magento\Framework\Api\AbstractSimpleObject implement
         return $this->setData(self::BILLING , $billing);
     }
 
+    public function getPayment()
+    {
+        return $this->_get(self::PAYMENT);
+    }
+
+    public function setPayment($payment)
+    {
+        return $this->setData(self::PAYMENT , $payment);
+    }
+
     public function getShop()
     {
         return $this->_get(self::SHOP);
@@ -154,13 +164,13 @@ class OystCheckout extends \Magento\Framework\Api\AbstractSimpleObject implement
         return $this->setData(self::TOTALS , $totals);
     }
 
-    public function getContext()
+    public function getAdditionalData()
     {
-        return $this->_get(self::CONTEXT);
+        return $this->_get(self::ADDITIONAL_DATA);
     }
 
-    public function setContext($context)
+    public function setAdditionalData($additionalData)
     {
-        return $this->setData(self::CONTEXT , $context);
+        return $this->setData(self::ADDITIONAL_DATA , $additionalData);
     }
 }

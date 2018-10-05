@@ -14,7 +14,7 @@ interface OystInterface
 
     const MERCHANT_ID = 'merchant_id';
     const SCRIPT_TAG = 'script_tag';
-    const PUBLIC_ENDPOINTS = 'public_endpoints';
+    const ENDPOINTS = 'endpoints';
 
     /**#@-*/
 
@@ -43,11 +43,11 @@ interface OystInterface
     /**
      * @return \Oyst\OneClick\Api\Data\Common\EndpointInterface[]|null
      */
-    public function getPublicEndpoints();
+    public function getEndpoints();
 
     /**
-     * @param \Oyst\OneClick\Api\Data\Common\EndpointInterface[] $publicEndpoints
+     * @param \Oyst\OneClick\Api\Data\Common\EndpointInterface[] $endpoints
      * @return $this
      */
-    public function setPublicEndpoints($publicEndpoints);
+    public function setEndpoints($endpoints);
 }

@@ -14,6 +14,9 @@ class Constants
     const OYST_DISPLAY_FREE = 'free';
     const OYST_DISPLAY_PROPOSAL = 'proposal';
 
+    const OYST_GATEWAY_ENDPOINT_TYPE_CAPTURE = 'capture';
+    const OYST_GATEWAY_ENDPOINT_TYPE_REFUND = 'refund';
+    
     const OYST_API_ORDER_STATUS_CANCELED = 'oyst_canceled';
     const OYST_API_ORDER_STATUS_PAYMENT_CAPTURED = 'oyst_payment_captured';
     const OYST_API_ORDER_STATUS_PAYMENT_WAITING_TO_CAPTURE = 'oyst_payment_waiting_to_capture';

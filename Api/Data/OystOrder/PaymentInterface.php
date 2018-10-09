@@ -6,7 +6,7 @@ namespace Oyst\OneClick\Api\Data\OystOrder;
  * Interface PaymentInterface
  * @api
  */
-interface PaymentInterface
+interface PaymentInterface extends \Magento\Framework\Api\ExtensibleDataInterface
 {
     /**#@+
      * Constants defined for keys of array, makes typos less likely

@@ -45,8 +45,16 @@
     <type name="Magento\Framework\App\Config\ScopeConfigInterface">
         <plugin name="oystOneclickDisableRegionRequired" type="Oyst\OneClick\Plugin\Config\DisableRegionRequiredPlugin"/>
     </type>
-    
+
     <type name="Magento\Quote\Observer\Webapi\SubmitObserver">
         <plugin name="oystOneclickPreventAutoSendOrderEmailPlugin" type="Oyst\OneClick\Plugin\Quote\PreventAutoSendOrderEmailPlugin"/>
+    </type>
+
+    <type name="Magento\Sales\Model\ResourceModel\Order">
+        <plugin name="oystOneclickHandleOrderToCapturePlugin" type="Oyst\OneClick\Plugin\Sales\HandleOrderToCapturePlugin"/>
+    </type>
+
+    <type name="Magento\Sales\Model\ResourceModel\Order\Creditmemo">
+        <plugin name="oystOneclickHandleOrderRefundPlugin" type="Oyst\OneClick\Plugin\Sales\HandleOrderRefundPlugin"/>
     </type>
 </config>

@@ -48,17 +48,23 @@ abstract class AbstractOystManagement
      * @var \Magento\Framework\Event\ManagerInterface
      */
     protected $eventManager;
-    
+
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
     protected $scopeConfig;
 
+    /**
+     * @var \Magento\Sales\Model\ResourceModel\Order\CollectionFactory
+     */
+    protected $orderCollectionFactory;
+    
     public function __construct(
         \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
         \Magento\Customer\Api\Data\CustomerInterfaceFactory $customerDataFactory,
         \Magento\Quote\Model\ResourceModel\Quote\CollectionFactory $quoteCollectionFactory,
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
+        \Magento\Sales\Model\ResourceModel\Order\CollectionFactory $orderCollectionFactory,
         \Magento\SalesRule\Model\CouponFactory $couponFactory,
         \Magento\Framework\Registry $coreRegistry,
         \Magento\Catalog\Helper\ImageFactory $imageFactory,
@@ -70,6 +76,7 @@ abstract class AbstractOystManagement
         $this->customerRepository = $customerRepository;
         $this->customerDataFactory = $customerDataFactory;
         $this->quoteCollectionFactory = $quoteCollectionFactory;
+        $this->orderCollectionFactory = $orderCollectionFactory;
         $this->productCollectionFactory = $productCollectionFactory;
         $this->couponFactory = $couponFactory;
         $this->coreRegistry = $coreRegistry;
@@ -135,10 +142,26 @@ abstract class AbstractOystManagement
         }
     }
 
+    public function getMagentoOrderByOystId($oystId)
+    {
+        return $this->orderCollectionFactory->create()
+            ->addFieldToFilter('oyst_id', $oystId)
+            ->setOrder('entity_id', \Magento\Framework\Data\Collection::SORT_ORDER_DESC)
+            ->getFirstItem();
+    }
+
+    public function getMagentoOrderByQuoteId($quoteId)
+    {
+        return $this->orderCollectionFactory->create()
+            ->addFieldToFilter('quote_id', $quoteId)
+            ->setOrder('entity_id', \Magento\Framework\Data\Collection::SORT_ORDER_DESC)
+            ->getFirstItem();
+    }
+
     protected function disableRegionRequired()
     {
         $this->coreRegistry->register(
-            \Oyst\OneClick\Helper\Constants::DISABLE_REGION_REQUIRED_REGISTRY_KEY, true
+            \Oyst\OneClick\Helper\Constants::DISABLE_REGION_REQUIRED_REGISTRY_KEY, true, true
         );
     }
 

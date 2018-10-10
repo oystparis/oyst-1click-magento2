@@ -1,0 +1,48 @@
+<?php
+
+namespace Oyst\OneClick\Model;
+
+class OystRefundManagement extends AbstractOystManagement implements \Oyst\OneClick\Api\OystRefundManagementInterface
+{
+    protected $oystPaymentManagement;
+
+    public function __construct(
+        \Oyst\OneClick\Model\OystPaymentManagement $oystPaymentManagement,
+        \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository, 
+        \Magento\Customer\Api\Data\CustomerInterfaceFactory $customerDataFactory, 
+        \Magento\Quote\Model\ResourceModel\Quote\CollectionFactory $quoteCollectionFactory, 
+        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory, 
+        \Magento\Sales\Model\ResourceModel\Order\CollectionFactory $orderCollectionFactory, 
+        \Magento\SalesRule\Model\CouponFactory $couponFactory, 
+        \Magento\Framework\Registry $coreRegistry, 
+        \Magento\Catalog\Helper\ImageFactory $imageFactory, 
+        \Magento\Store\Model\App\Emulation $appEmulation, 
+        \Magento\Framework\Event\ManagerInterface $eventManager, 
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+    )
+    {
+        $this->oystPaymentManagement = $oystPaymentManagement;
+        parent::__construct(
+            $customerRepository, 
+            $customerDataFactory, 
+            $quoteCollectionFactory, 
+            $productCollectionFactory, 
+            $orderCollectionFactory, 
+            $couponFactory, 
+            $coreRegistry, 
+            $imageFactory, 
+            $appEmulation, 
+            $eventManager, 
+            $scopeConfig
+        );
+    }
+    
+    public function createMagentoCreditmemo($oystId, \Oyst\OneClick\Api\Data\OystRefundInterface $oystRefund)
+    {
+        $order = $this->getMagentoOrderByOystId($oystId);
+
+        $this->oystPaymentManagement->handleMagentoOrdersToRefund([$order->getId()]);
+
+        return true;
+    }
+}

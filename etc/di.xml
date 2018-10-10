@@ -16,6 +16,8 @@
     <preference for="Oyst\OneClick\Api\Data\OystConfig\EcommerceInterface" type="Oyst\OneClick\Model\Data\OystConfig\Ecommerce"/>
     <preference for="Oyst\OneClick\Api\Data\OystConfig\OystInterface" type="Oyst\OneClick\Model\Data\OystConfig\Oyst"/>
 
+    <preference for="Oyst\OneClick\Api\Data\OystRefundInterface" type="Oyst\OneClick\Model\Data\OystRefund"/>
+
     <preference for="Oyst\OneClick\Api\Data\Common\AddressInterface" type="Oyst\OneClick\Model\Data\Common\Address"/>
     <preference for="Oyst\OneClick\Api\Data\Common\BillingInterface" type="Oyst\OneClick\Model\Data\Common\Billing"/>
     <preference for="Oyst\OneClick\Api\Data\Common\CountryInterface" type="Oyst\OneClick\Model\Data\Common\Country"/>

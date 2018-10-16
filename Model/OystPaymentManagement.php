@@ -21,16 +21,16 @@ class OystPaymentManagement extends AbstractOystManagement
         \Magento\Sales\Api\CreditmemoManagementInterface $creditmemoManagement,
         \Magento\Sales\Api\OrderManagementInterface $orderManagement,
         \Magento\Sales\Model\Order\CreditmemoFactory $creditmemoFactory,
-        \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository, 
-        \Magento\Customer\Api\Data\CustomerInterfaceFactory $customerDataFactory, 
-        \Magento\Quote\Model\ResourceModel\Quote\CollectionFactory $quoteCollectionFactory, 
-        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory, 
-        \Magento\Sales\Model\ResourceModel\Order\CollectionFactory $orderCollectionFactory, 
-        \Magento\SalesRule\Model\CouponFactory $couponFactory, 
-        \Magento\Framework\Registry $coreRegistry, 
-        \Magento\Catalog\Helper\ImageFactory $imageFactory, 
-        \Magento\Store\Model\App\Emulation $appEmulation, 
-        \Magento\Framework\Event\ManagerInterface $eventManager, 
+        \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
+        \Magento\Customer\Api\Data\CustomerInterfaceFactory $customerDataFactory,
+        \Magento\Quote\Model\ResourceModel\Quote\CollectionFactory $quoteCollectionFactory,
+        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
+        \Magento\Sales\Model\ResourceModel\Order\CollectionFactory $orderCollectionFactory,
+        \Magento\SalesRule\Model\CouponFactory $couponFactory,
+        \Magento\Framework\Registry $coreRegistry,
+        \Magento\Catalog\Helper\ImageFactory $imageFactory,
+        \Magento\Store\Model\App\Emulation $appEmulation,
+        \Magento\Framework\Event\ManagerInterface $eventManager,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     )
     {
@@ -41,16 +41,16 @@ class OystPaymentManagement extends AbstractOystManagement
         $this->oystOrderFactory = $oystOrderFactory;
         $this->orderManagement = $orderManagement;
         parent::__construct(
-            $customerRepository, 
-            $customerDataFactory, 
-            $quoteCollectionFactory, 
-            $productCollectionFactory, 
-            $orderCollectionFactory, 
-            $couponFactory, 
-            $coreRegistry, 
-            $imageFactory, 
-            $appEmulation, 
-            $eventManager, 
+            $customerRepository,
+            $customerDataFactory,
+            $quoteCollectionFactory,
+            $productCollectionFactory,
+            $orderCollectionFactory,
+            $couponFactory,
+            $coreRegistry,
+            $imageFactory,
+            $appEmulation,
+            $eventManager,
             $scopeConfig
         );
     }
@@ -86,21 +86,13 @@ class OystPaymentManagement extends AbstractOystManagement
 
         foreach ($gatewayResult['orders'] as $gatewayOrder) {
             $order = $orders->getItemByColumnValue(
-                'increment_id', $gatewayOrder['order']['merchant_order_reference']
+                'increment_id', $gatewayOrder['internal_id']
             );
 
             $oystOrder = $this->oystOrderFactory->create();
-            $mappedGatewayOrder = [
-                'payment' => [
-                    'last_transaction' => [
-                        'id' => $gatewayOrder['order']['transaction']['id'],
-                        'amount' => $order->getGrandTotal(),
-                        'currency' => $order->getOrderCurrencyCode(),
-                    ]
-                ],
-            ];
+
             $this->dataObjectHelper->populateWithArray(
-                $oystOrder, $mappedGatewayOrder, '\Oyst\OneClick\Api\Data\OystOrderInterface'
+                $oystOrder, $gatewayOrder, '\Oyst\OneClick\Api\Data\OystOrderInterface'
             );
 
             $this->handleMagentoOrderPaymentCaptured($order, $oystOrder);
@@ -140,7 +132,7 @@ class OystPaymentManagement extends AbstractOystManagement
 
         foreach ($gatewayResult['orders'] as $gatewayOrder) {
             $order = $orders->getItemByColumnValue(
-                'increment_id', $gatewayOrder['order']['merchant_order_reference']
+                'increment_id', $gatewayOrder['internal_id']
             );
 
             $creditmemo = $this->creditmemoFactory->createByOrder($order);

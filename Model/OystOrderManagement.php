@@ -9,8 +9,11 @@ class OystOrderManagement extends AbstractOystManagement implements \Oyst\OneCli
     protected $oystOrderBuilder;
 
     protected $orderManagement;
+    
+    protected $oystPaymentManagement;
 
     public function __construct(
+        \Oyst\OneClick\Model\OystPaymentManagement $oystPaymentManagement,
         \Magento\Quote\Api\CartManagementInterface $cartManagement,
         \Oyst\OneClick\Model\OystOrder\Builder $oystOrderBuilder,
         \Magento\Sales\Model\ResourceModel\Order\CollectionFactory $orderCollectionFactory,
@@ -30,6 +33,7 @@ class OystOrderManagement extends AbstractOystManagement implements \Oyst\OneCli
         $this->cartManagement = $cartManagement;
         $this->orderManagement = $orderManagement;
         $this->oystOrderBuilder = $oystOrderBuilder;
+        $this->oystPaymentManagement = $oystPaymentManagement;
         parent::__construct(
             $customerRepository,
             $customerDataFactory,

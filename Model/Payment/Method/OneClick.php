@@ -13,6 +13,8 @@ class OneClick extends \Magento\Payment\Model\Method\AbstractMethod
      */
     protected $_code = self::PAYMENT_METHOD_OYST_ONECLICK_CODE;
 
+    protected $_canRefund = true;
+
     public function isActive($storeId = null)
     {
         $path = 'oyst_oneclick/general/enabled';

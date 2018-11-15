@@ -10,6 +10,11 @@ class Synchronizer
     protected $cart;
 
     /**
+     * @var \Magento\Checkout\Model\Session
+     */
+    protected $checkoutSession;
+    
+    /**
      * @var \Magento\Framework\Event\ManagerInterface
      */
     protected $eventManager;
@@ -21,11 +26,13 @@ class Synchronizer
 
     public function __construct(
         \Magento\Checkout\Model\Cart $cart,
+        \Magento\Checkout\Model\Session $checkoutSession,
         \Magento\Framework\Event\ManagerInterface $eventManager,
         \Magento\Quote\Api\Data\PaymentInterfaceFactory $paymentFactory
     )
     {
         $this->cart = $cart;
+        $this->checkoutSession = $checkoutSession;
         $this->eventManager = $eventManager;
         $this->paymentFactory = $paymentFactory;
     }
@@ -37,7 +44,7 @@ class Synchronizer
         \Magento\SalesRule\Model\Coupon $coupon
     )
     {
-        $this->cart->setQuote($quote);
+        $this->checkoutSession->replaceQuote($quote);
         $quote->setOystId($oystCheckout->getOystId());
 
         $this->syncMagentoAddresses($quote, $oystCheckout->getBilling(), $oystCheckout->getShipping());

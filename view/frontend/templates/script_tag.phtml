@@ -1,3 +1,4 @@
+<?php if ($block->isEnabled()) : ?>
 
 <script>
 
@@ -10,4 +11,6 @@
 
 </script>
 
-<?php echo $this->getScriptTag(); ?>
+<?php echo $block->getScriptTag(); ?>
+
+<?php endif ?>

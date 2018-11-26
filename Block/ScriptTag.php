@@ -14,5 +14,10 @@ class ScriptTag extends \Magento\Framework\View\Element\Template
             $scriptTag
         );
     }
+
+    public function isEnabled()
+    {
+        return $this->_scopeConfig->getValue('oyst_oneclick/general/enabled');
+    }
 }
 

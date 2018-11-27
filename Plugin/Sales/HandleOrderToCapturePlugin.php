@@ -23,7 +23,7 @@ class HandleOrderToCapturePlugin
 
         if ($object instanceof \Magento\Sales\Model\Order
          && $object->getStatus() == \Oyst\OneClick\Helper\Constants::OYST_ORDER_STATUS_PAYMENT_TO_CAPTURE) {
-            $this->oystPaymentManagement->handleMagentoOrdersToCapture([$object->getId()]);
+            $this->oystPaymentManagement->handleMagentoOrdersToCapture([$object->getId() => $object->getGrandTotal()]);
         }
 
         return $result;

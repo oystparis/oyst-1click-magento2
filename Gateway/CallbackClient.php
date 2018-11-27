@@ -23,7 +23,7 @@ class CallbackClient
         $this->scopeConfig = $scopeConfig;
     }
 
-    public function callGatewayCallbackApi($endpointType, array $oystOrderIds)
+    public function callGatewayCallbackApi($endpointType, array $oystOrderAmounts)
     {
         $endpoint = $this->getEndpoint($endpointType);
         
@@ -43,7 +43,7 @@ class CallbackClient
         ];
         $client->setOptions($options);
         $client->setRawBody(json_encode([
-            'orderIds' => $oystOrderIds
+            'orderAmounts' => $oystOrderAmounts
         ]));
         $client->setHeaders($httpHeaders);
         $client->setUri($endpoint['url']);

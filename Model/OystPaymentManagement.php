@@ -57,27 +57,27 @@ class OystPaymentManagement extends AbstractOystManagement
 
     /**
      * TODO : Check if order has already been captured
-     * @param array $orderIds
+     * @param array $orderAmounts (Amounts indexed by order ids)
      * @param bool $skipInvoiceCreation
      * @return $this
      */
-    public function handleMagentoOrdersToCapture(array $orderIds, $skipInvoiceCreation = false)
+    public function handleMagentoOrdersToCapture(array $orderAmounts, $skipInvoiceCreation = false)
     {
         $orders = $this->orderCollectionFactory->create()
-            ->addFieldToFilter('entity_id', ['in' => $orderIds])
+            ->addFieldToFilter('entity_id', ['in' => array_keys($orderAmounts)])
             ->addFieldToFilter('status', \Oyst\OneClick\Helper\Constants::OYST_ORDER_STATUS_PAYMENT_TO_CAPTURE);
 
         if (count($orders) == 0) {
             return $this;
         }
 
-        $oystOrderIds = [];
+        $oystOrderAmounts = [];
         foreach ($orders as $order) {
-            $oystOrderIds[] = $order->getOystId();
+            $oystOrderAmounts[$order->getOystId()] = $orderAmounts[$order->getId()];
         }
 
         $gatewayResult = json_decode($this->gatewayCallbackClient->callGatewayCallbackApi(
-            \Oyst\OneClick\Helper\Constants::OYST_GATEWAY_ENDPOINT_TYPE_CAPTURE, $oystOrderIds
+            \Oyst\OneClick\Helper\Constants::OYST_GATEWAY_ENDPOINT_TYPE_CAPTURE, $oystOrderAmounts
         ), true);
 
         if ($skipInvoiceCreation) {
@@ -103,27 +103,26 @@ class OystPaymentManagement extends AbstractOystManagement
     }
 
     /**
-     * TODO : Full Refund is handled but allow partial refunds
-     * @param array $orderIds
+     * @param array $orderAmounts (Amounts indexed by order ids)
      * @param bool $skipCreditmemoCreation
      * @return $this
      */
-    public function handleMagentoOrdersToRefund($orderIds, $skipCreditmemoCreation = false)
+    public function handleMagentoOrdersToRefund($orderAmounts, $skipCreditmemoCreation = false)
     {
         $orders = $this->orderCollectionFactory->create()
-            ->addFieldToFilter('entity_id', ['in' => $orderIds]);
+            ->addFieldToFilter('entity_id', ['in' => array_keys($orderAmounts)]);
 
         if (count($orders) == 0) {
             return $this;
         }
 
-        $oystOrderIds = [];
+        $oystOrderAmounts = [];
         foreach ($orders as $order) {
-            $oystOrderIds[] = $order->getOystId();
+            $oystOrderAmounts[$order->getOystId()] = $orderAmounts[$order->getId()];
         }
 
         $gatewayResult = json_decode($this->gatewayCallbackClient->callGatewayCallbackApi(
-            \Oyst\OneClick\Helper\Constants::OYST_GATEWAY_ENDPOINT_TYPE_REFUND, $oystOrderIds
+            \Oyst\OneClick\Helper\Constants::OYST_GATEWAY_ENDPOINT_TYPE_REFUND, $oystOrderAmounts
         ), true);
 
         if ($skipCreditmemoCreation) {

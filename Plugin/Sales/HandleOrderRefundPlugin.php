@@ -22,13 +22,7 @@ class HandleOrderRefundPlugin
         $result = $proceed($object);
 
         $order = $object->getOrder();
-        if ($object->getGrandTotal() ==  $order->getGrandTotal()) {
-            $this->oystPaymentManagement->handleMagentoOrdersToRefund([$order->getId()], true);
-        } else {
-            $order->addStatusHistoryComment(
-                __('Partial Refund %1 %2 should be handled from Oyst Back Office.', $order->getGrandTotal(), $order->getOrderCurrencyCode())
-            );
-        }
+        $this->oystPaymentManagement->handleMagentoOrdersToRefund([$order->getId(), $object->getGrandTotal()], true);
 
         return $result;
     }

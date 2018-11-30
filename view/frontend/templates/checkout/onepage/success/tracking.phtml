@@ -1,0 +1,10 @@
+<?php if ($block->isEnabled()) : ?>
+
+<script>
+
+    window.__OYST__ = window.__OYST__ || {};
+    window.__OYST__.tracking = <?php echo json_encode($block->getCheckoutOnepageSuccessTrackingParameters()) ?>;
+
+</script>
+
+<?php endif ?>

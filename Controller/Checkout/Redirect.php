@@ -22,6 +22,10 @@ class Redirect extends \Magento\Framework\App\Action\Action
 
     protected $orderEmailSender;
 
+    protected $helperData;
+
+    protected $newsletterSubscriberFactory;
+
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
@@ -32,7 +36,9 @@ class Redirect extends \Magento\Framework\App\Action\Action
         \Magento\Quote\Model\QuoteRepository $quoteRepository,
         \Magento\Sales\Model\Order\Email\Sender\OrderSender $orderEmailSender,
         \Psr\Log\LoggerInterface $logger,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Oyst\OneClick\Helper\Data $helperData,
+        \Magento\Newsletter\Model\SubscriberFactory $newsletterSubscriberFactory
     )
     {
         parent::__construct($context);
@@ -45,6 +51,8 @@ class Redirect extends \Magento\Framework\App\Action\Action
         $this->scopeConfig = $scopeConfig;
         $this->customerRepository = $customerRepository;
         $this->orderEmailSender = $orderEmailSender;
+        $this->helperData = $helperData;
+        $this->newsletterSubscriberFactory = $newsletterSubscriberFactory;
     }
 
     public function execute()
@@ -87,6 +95,16 @@ class Redirect extends \Magento\Framework\App\Action\Action
                     }
 
                     $this->customerSession->loginById($account->getId());
+                }
+            }
+
+            $customer = $this->customerSession->getCustomer();
+            if ($customer->getId()) {
+                $newsletterOptin = $this->helperData->getSalesObjectExtraData($order, 'newsletter_optin');
+                if ($newsletterOptin != $this->newsletterSubscriberFactory->create()->loadByCustomerId($customer->getId())->isSubscribed()) {
+                    $account = $this->customerRepository->getById($customer->getId());
+                    $account->getExtensionAttributes()->setIsSubscribed($newsletterOptin);
+                    $this->customerRepository->save($account);
                 }
             }
         } catch (\Exception $e) {

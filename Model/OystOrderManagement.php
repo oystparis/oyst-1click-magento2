@@ -9,14 +9,17 @@ class OystOrderManagement extends AbstractOystManagement implements \Oyst\OneCli
     protected $oystOrderBuilder;
 
     protected $orderManagement;
-    
+
     protected $oystPaymentManagement;
+
+    protected $helperData;
 
     public function __construct(
         \Oyst\OneClick\Model\OystPaymentManagement $oystPaymentManagement,
         \Magento\Quote\Api\CartManagementInterface $cartManagement,
         \Oyst\OneClick\Model\OystOrder\Builder $oystOrderBuilder,
         \Magento\Sales\Model\ResourceModel\Order\CollectionFactory $orderCollectionFactory,
+        \Oyst\OneClick\Helper\Data $helperData,
         \Magento\Sales\Api\OrderManagementInterface $orderManagement,
         \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
         \Magento\Customer\Api\Data\CustomerInterfaceFactory $customerDataFactory,
@@ -27,13 +30,15 @@ class OystOrderManagement extends AbstractOystManagement implements \Oyst\OneCli
         \Magento\Catalog\Helper\ImageFactory $imageFactory,
         \Magento\Store\Model\App\Emulation $appEmulation,
         \Magento\Framework\Event\ManagerInterface $eventManager,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Newsletter\Model\SubscriberFactory $newsletterSubscriberFactory
     )
     {
         $this->cartManagement = $cartManagement;
         $this->orderManagement = $orderManagement;
         $this->oystOrderBuilder = $oystOrderBuilder;
         $this->oystPaymentManagement = $oystPaymentManagement;
+        $this->helperData = $helperData;
         parent::__construct(
             $customerRepository,
             $customerDataFactory,
@@ -45,7 +50,8 @@ class OystOrderManagement extends AbstractOystManagement implements \Oyst\OneCli
             $imageFactory,
             $appEmulation,
             $eventManager,
-            $scopeConfig
+            $scopeConfig,
+            $newsletterSubscriberFactory
         );
     }
 
@@ -56,6 +62,11 @@ class OystOrderManagement extends AbstractOystManagement implements \Oyst\OneCli
         if (!$quote->getId()) {
             throw new \Exception('Quote is not available.');
         }
+
+        $this->helperData->addQuoteExtraData(
+            $quote, 'newsletter_optin', $oystOrder->getUser()->getNewsletter()
+        );
+        $quote->save();
 
         $this->cartManagement->placeOrder($quote->getId());
 

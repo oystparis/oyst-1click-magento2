@@ -58,7 +58,12 @@ abstract class AbstractOystManagement
      * @var \Magento\Sales\Model\ResourceModel\Order\CollectionFactory
      */
     protected $orderCollectionFactory;
-    
+
+    /**
+     * @var \Magento\Newsletter\Model\SubscriberFactory
+     */
+    protected $newsletterSubscriberFactory;
+
     public function __construct(
         \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
         \Magento\Customer\Api\Data\CustomerInterfaceFactory $customerDataFactory,
@@ -70,7 +75,8 @@ abstract class AbstractOystManagement
         \Magento\Catalog\Helper\ImageFactory $imageFactory,
         \Magento\Store\Model\App\Emulation $appEmulation,
         \Magento\Framework\Event\ManagerInterface $eventManager,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Newsletter\Model\SubscriberFactory $newsletterSubscriberFactory
     )
     {
         $this->customerRepository = $customerRepository;
@@ -84,6 +90,7 @@ abstract class AbstractOystManagement
         $this->appEmulation = $appEmulation;
         $this->eventManager = $eventManager;
         $this->scopeConfig = $scopeConfig;
+        $this->newsletterSubscriberFactory = $newsletterSubscriberFactory;
         $this->disableRegionRequired();
     }
 
@@ -93,6 +100,14 @@ abstract class AbstractOystManagement
             return $this->customerRepository->get($email);
         } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
             return $this->customerDataFactory->create();
+        }
+    }
+
+    protected function addNewsletterSubscriberToCustomer($customer)
+    {
+        if ($customer->getId()) {
+            $newsletterSubscriber = $this->newsletterSubscriberFactory->create()->loadByCustomerId($customer->getId());
+            $customer->setData('newsletter_subscriber', $newsletterSubscriber);
         }
     }
 

@@ -45,7 +45,8 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
         \Magento\Catalog\Helper\ImageFactory $imageFactory,
         \Magento\Store\Model\App\Emulation $appEmulation,
         \Magento\Framework\Event\ManagerInterface $eventManager,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Newsletter\Model\SubscriberFactory $newsletterSubscriberFactory
     )
     {
         $this->quoteRepository = $quoteRepository;
@@ -64,7 +65,8 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
             $imageFactory,
             $appEmulation,
             $eventManager,
-            $scopeConfig
+            $scopeConfig,
+            $newsletterSubscriberFactory
         );
     }
 
@@ -77,6 +79,7 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
             array_map(function($item) {return $item->getProductId();}, $quote->getAllItems()),
             $quote->getStoreId()
         );
+        $this->addNewsletterSubscriberToCustomer($quote->getCustomer());
 
         return $this->oystCheckoutBuilder->buildOystCheckout($quote, $totals, $shippingMethods, $products);
     }

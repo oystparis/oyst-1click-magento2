@@ -19,6 +19,7 @@ class SetOystFieldsToOrderObserver implements ObserverInterface
         $quote = $observer->getEvent()->getData('quote');
 
         $order->setOystId($quote->getOystId());
+        $order->setOystExtraData($quote->getOystExtraData());
 
         return $this;
     }

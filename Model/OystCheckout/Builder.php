@@ -351,10 +351,13 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
             $oystCommonUser->setEmail($customer->getEmail());
             $oystCommonUser->setFirstname($customer->getFirstname());
             $oystCommonUser->setLastname($customer->getLastname());
+            $customerData = $customer->__toArray();
+            $oystCommonUser->setNewsletter($customerData['newsletter_subscriber']->isSubscribed());
         } else {
             $oystCommonUser->setEmail($quote->getCustomerEmail());
             $oystCommonUser->setFirstname($quote->getCustomerFirstname());
             $oystCommonUser->setLastname($quote->getCustomerLastname());
+            $oystCommonUser->setNewsletter(false);
         }
 
         return $oystCommonUser;

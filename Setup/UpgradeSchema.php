@@ -71,6 +71,30 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $integration->setStatus(\Magento\Integration\Model\Integration::STATUS_ACTIVE)->save();
         }
 
+        if (version_compare($context->getVersion(), '2.0.0') < 0) {
+            $setup->getConnection()->addColumn(
+                $setup->getTable('quote'),
+                'oyst_extra_data',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length' => 256,
+                    'comment' => 'Oyst Id',
+                    'nullable' => true,
+                ]
+            );
+
+            $setup->getConnection()->addColumn(
+                $setup->getTable('sales_order'),
+                'oyst_extra_data',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length' => 256,
+                    'comment' => 'Oyst Id',
+                    'nullable' => true,
+                ]
+            );
+        }
+        
         $setup->endSetup();
     }
 }

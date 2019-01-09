@@ -81,12 +81,12 @@ interface UserInterface
     public function setGender($gender);
 
     /**
-     * @return string
+     * @return bool
      */
     public function getNewsletter();
 
     /**
-     * @param string $newsletter
+     * @param bool $newsletter
      * @return $this
      */
     public function setNewsletter($newsletter);

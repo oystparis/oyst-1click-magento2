@@ -78,7 +78,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 [
                     'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
                     'length' => 256,
-                    'comment' => 'Oyst Id',
+                    'comment' => 'Oyst Extra Data',
                     'nullable' => true,
                 ]
             );
@@ -89,7 +89,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 [
                     'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
                     'length' => 256,
-                    'comment' => 'Oyst Id',
+                    'comment' => 'Oyst Extra Data',
                     'nullable' => true,
                 ]
             );

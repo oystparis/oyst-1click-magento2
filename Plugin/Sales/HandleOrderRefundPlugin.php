@@ -22,7 +22,7 @@ class HandleOrderRefundPlugin
         $result = $proceed($object);
 
         $order = $object->getOrder();
-        $this->oystPaymentManagement->handleMagentoOrdersToRefund([$order->getId(), $object->getGrandTotal()], true);
+        $this->oystPaymentManagement->handleMagentoOrdersToRefund([$order->getId() => $object->getGrandTotal()], true);
 
         return $result;
     }

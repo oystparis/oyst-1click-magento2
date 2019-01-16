@@ -128,7 +128,9 @@ class Synchronizer
         $billingAddress->addData($billingAddressData);
 
         $billingAddress->setSaveInAddressBook(false);
-        $billingAddress->setShouldIgnoreValidation(true);
+        if (($validateRes = $billingAddress->validate()) !== true) {
+            throw new \Exception(implode('\n', $validateRes));
+        }
 
         /* @var Magento\Quote\Model\Quote\Address $shippingAddress */
         $shippingAddress = $quote->getShippingAddress();
@@ -137,7 +139,9 @@ class Synchronizer
         $shippingAddress->addData($shippingAddressData);
 
         $shippingAddress->setSaveInAddressBook(false);
-        $shippingAddress->setShouldIgnoreValidation(true);
+        if (($validateRes = $shippingAddress->validate()) !== true) {
+            throw new \Exception(implode('\n', $validateRes));
+        }
 
         return true;
     }

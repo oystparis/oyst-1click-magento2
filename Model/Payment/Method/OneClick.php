@@ -15,6 +15,8 @@ class OneClick extends \Magento\Payment\Model\Method\AbstractMethod
 
     protected $_canRefund = true;
 
+    protected $_canRefundInvoicePartial = true;
+
     public function isActive($storeId = null)
     {
         $path = 'oyst_oneclick/general/enabled';

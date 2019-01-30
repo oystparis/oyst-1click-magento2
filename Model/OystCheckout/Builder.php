@@ -300,6 +300,14 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
         $oystCheckoutShipping->setMethodsAvailable($this->buildOystCheckoutShippingMethodsAvailable($shippingMethods));
         $oystCheckoutShipping->setMethodApplied($this->buildOystCheckoutShippingMethodApplied($shippingAddress->getShippingMethod(), $shippingMethods));
 
+        $methodsAvailable = $oystCheckoutShipping->getMethodsAvailable();
+        foreach ($methodsAvailable as $idx => $methodAvailable) {
+            if ($methodAvailable->getReference() == $oystCheckoutShipping->getMethodApplied()->getReference()) {
+                $methodsAvailable[$idx] = $oystCheckoutShipping->getMethodApplied();
+            }
+        }
+        $oystCheckoutShipping->setMethodsAvailable($methodsAvailable);
+
         return $oystCheckoutShipping;
     }
 

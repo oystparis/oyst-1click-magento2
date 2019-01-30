@@ -72,7 +72,10 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
 
     public function getOystCheckoutFromMagentoQuote($id)
     {
-        $quote = $this->quoteRepository->getActive($id);
+        $quote = $this->coreRegistry->registry('oyst_oneclick_current_quote');
+        if (empty($quote) || $quote->getId() != $id) {
+            $quote = $this->quoteRepository->getActive($id);
+        }
         $totals = $this->cartTotalRepository->get($id);
         $shippingMethods = $this->getShippingMethodList($quote);
         $products = $this->getMagentoProductsById(
@@ -103,6 +106,7 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
 
         $quote->setTotalsCollectedFlag(false)->collectTotals();
         $this->quoteRepository->save($quote);
+        $this->coreRegistry->register('oyst_oneclick_current_quote', $quote, true);
 
         return $this->getOystCheckoutFromMagentoQuote($quote->getId());
     }

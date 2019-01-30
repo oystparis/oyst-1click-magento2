@@ -380,7 +380,7 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
                 /* @var $oystCheckoutDiscount \Oyst\OneClick\Api\Data\Common\DiscountInterface */
                 $oystCheckoutDiscount = $this->oystCommonDiscountFactory->create();
                 $oystCheckoutDiscount->setLabel($total->getData('title')->__toString());
-                $oystCheckoutDiscount->setAmountTaxIncl($total->getData('value'));
+                $oystCheckoutDiscount->setAmountTaxIncl(abs($total->getData('value')));
 
                 $oystCheckoutDiscounts[] = $oystCheckoutDiscount;
             }

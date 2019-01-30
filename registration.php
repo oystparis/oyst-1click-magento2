@@ -11,6 +11,6 @@
 
 \Magento\Framework\Component\ComponentRegistrar::register(
     \Magento\Framework\Component\ComponentRegistrar::MODULE,
-    'Oyst_OneClick',
+    \Oyst\OneClick\Helper\Constants::MODULE_NAME,
     __DIR__
 );

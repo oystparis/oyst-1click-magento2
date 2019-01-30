@@ -26,7 +26,7 @@ class CallbackClient
     public function callGatewayCallbackApi($endpointType, array $oystOrderAmounts)
     {
         $endpoint = $this->getEndpoint($endpointType);
-        
+
         $httpHeaders = new \Zend\Http\Headers();
         $httpHeaders->addHeaders([
             'Authorization' => 'Bearer ' . $endpoint['api_key'],
@@ -46,7 +46,7 @@ class CallbackClient
             'orderAmounts' => $oystOrderAmounts
         ]));
         $client->setHeaders($httpHeaders);
-        $client->setUri($endpoint['url']);
+        $client->setUri($this->getEndpointUrl($endpoint['url']));
         $client->setMethod(\Zend\Http\Request::METHOD_POST);
 
         $response = $client->send();
@@ -64,5 +64,14 @@ class CallbackClient
         }
 
         throw new \Exception('Invalid endpoint type : '.$endpointType);
+    }
+
+    protected function getEndpointUrl($endpointUrl)
+    {
+        return str_replace(
+            \Oyst\OneClick\Helper\Constants::MERCHANT_ID_PLACEHOLDER,
+            $this->scopeConfig->getValue('oyst_oneclick/general/merchant_id'),
+            $endpointUrl
+        );
     }
 }

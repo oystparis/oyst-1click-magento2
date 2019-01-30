@@ -4,6 +4,8 @@ namespace Oyst\OneClick\Helper;
 
 class Constants
 {
+    const MODULE_NAME = 'Oyst_OneClick';
+    
     const ITEM_TYPE_SIMPLE = 'simple';
     const ITEM_TYPE_VIRTUAL = 'virtual';
     const ITEM_TYPE_VARIANT = 'variant';

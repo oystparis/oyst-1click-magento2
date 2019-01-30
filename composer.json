@@ -5,7 +5,7 @@
     "keywords": ["magento", "oyst", "api", "php", "payment", "1-click", "catalog", "order", "module"],
     "license": "Apache-2.0",
     "type": "magento2-module",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "authors": [
         {
             "name": "Oyst Team",

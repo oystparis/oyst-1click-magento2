@@ -8,12 +8,6 @@ class AccessToken extends \Magento\Config\Block\System\Config\Form\Field
     
     protected $oauthService;
 
-    /**
-     * Version constructor.
-     * @param \Magento\Integration\Model\IntegrationFactory $integrationFactory
-     * @param Context $context
-     * @param array $data
-     */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Integration\Model\IntegrationFactory $integrationFactory,

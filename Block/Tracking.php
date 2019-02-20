@@ -22,14 +22,31 @@ class Tracking extends \Magento\Framework\View\Element\Template
 
     public function getCheckoutOnepageSuccessTrackingParameters()
     {
-        $order = $this->orderFactory->create()->load($this->checkoutSession->getLastOrderId());
         return array(
+            'version' => 1,
+            'type' => 'track',
+            'event' => 'Confirmation Displayed',
+        );
+    }
+
+    public function getCheckoutOnepageSuccessTrackingExtraParameters()
+    {
+        $order = $this->orderFactory->create()->load($this->checkoutSession->getLastOrderId());
+        $extraParameters = [
             'amount' => $order->getGrandTotal(),
             'paymentMethod' => $order->getPayment()->getMethod(),
             'currency' => $order->getOrderCurrencyCode(),
             'referrer' => urlencode($this->_urlBuilder->getCurrentUrl()),
             'merchantId' => $this->_scopeConfig->getValue('oyst_oneclick/general/merchant_id'),
-        );
+            'orderId' => $order->getIncrementId(),
+            'userEmail' => $order->getCustomerEmail(),
+        ];
+
+        if ($order->getCustomerId()) {
+            $extraParameters['userId'] = $order->getCustomerId();
+        }
+
+        return $extraParameters;
     }
 
     public function isEnabled()

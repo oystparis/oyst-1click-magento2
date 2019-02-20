@@ -3,7 +3,10 @@
 <script>
 
     window.__OYST__ = window.__OYST__ || {};
-    window.__OYST__.tracking = <?php echo json_encode($block->getCheckoutOnepageSuccessTrackingParameters()) ?>;
+    window.__OYST__.tracking = {
+        'parameters': <?php echo json_encode($block->getCheckoutOnepageSuccessTrackingParameters()) ?>,
+        'extraParameters': <?php echo json_encode($block->getCheckoutOnepageSuccessTrackingExtraParameters()) ?>
+    };
 
 </script>
 

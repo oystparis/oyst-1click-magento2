@@ -4,6 +4,27 @@ namespace Oyst\OneClick\Helper;
 
 class Data
 {
+    protected $coreRegistry;
+
+    public function __construct(
+        \Magento\Framework\Registry $coreRegistry
+    )
+    {
+        $this->coreRegistry = $coreRegistry;
+    }
+
+    public function handleExceptionForWebapi(\Exception $e)
+    {
+        $this->coreRegistry->register(
+            \Oyst\OneClick\Helper\Constants::WEBAPI_ERROR_REGISTRY_KEY,
+            [
+                'type' => \Oyst\OneClick\Helper\Constants::WEBAPI_TYPE_ERROR,
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]
+        );
+    }
+
     public function addQuoteExtraData(\Magento\Quote\Model\Quote $quote, $key, $value)
     {
         $extraData = json_decode($quote->getOystExtraData(), true);

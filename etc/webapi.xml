@@ -45,7 +45,7 @@
     </route>
 
     <route url="/V1/oyst-oneclick/order/:oystId/refund" method="POST">
-        <service class="Oyst\OneClick\Api\OystOrderManagementInterface" method="createMagentoCreditmemo"/>
+        <service class="Oyst\OneClick\Api\OystRefundManagementInterface" method="createMagentoCreditmemo"/>
         <resources>
             <resource ref="Oyst_OneClick::order" />
         </resources>

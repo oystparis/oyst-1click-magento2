@@ -32,7 +32,8 @@ class OystPaymentManagement extends AbstractOystManagement
         \Magento\Store\Model\App\Emulation $appEmulation,
         \Magento\Framework\Event\ManagerInterface $eventManager,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Newsletter\Model\SubscriberFactory $newsletterSubscriberFactory
+        \Magento\Newsletter\Model\SubscriberFactory $newsletterSubscriberFactory,
+        \Oyst\OneClick\Helper\Data $helperData
     )
     {
         $this->creditmemoManagement = $creditmemoManagement;
@@ -53,7 +54,8 @@ class OystPaymentManagement extends AbstractOystManagement
             $appEmulation,
             $eventManager,
             $scopeConfig,
-            $newsletterSubscriberFactory
+            $newsletterSubscriberFactory,
+            $helperData
         );
     }
 

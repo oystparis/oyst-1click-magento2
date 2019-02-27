@@ -41,6 +41,11 @@ class OystConfigManagement implements \Oyst\OneClick\Api\OystConfigManagementInt
      */
     protected $orderConfig;
 
+    /**
+     * @var \Oyst\OneClick\Helper\Data
+     */
+    protected $helperData;
+
     public function __construct(
         \Magento\Config\Model\PreparedValueFactory $preparedValueFactory,
         \Magento\Framework\App\Cache\Manager $cacheManager,
@@ -48,7 +53,8 @@ class OystConfigManagement implements \Oyst\OneClick\Api\OystConfigManagementInt
         \Magento\Shipping\Model\Config\Source\Allmethods $configShippingMethods,
         \Magento\Directory\Model\AllowedCountries $configAllowedCountries,
         \Magento\Directory\Model\ResourceModel\Country\CollectionFactory $countryCollectionFactory,
-        \Magento\Sales\Model\Order\Config $orderConfig
+        \Magento\Sales\Model\Order\Config $orderConfig,
+        \Oyst\OneClick\Helper\Data $helperData
     )
     {
         $this->preparedValueFactory = $preparedValueFactory;
@@ -58,65 +64,74 @@ class OystConfigManagement implements \Oyst\OneClick\Api\OystConfigManagementInt
         $this->configAllowedCountries = $configAllowedCountries;
         $this->countryCollectionFactory = $countryCollectionFactory;
         $this->orderConfig = $orderConfig;
+        $this->helperData = $helperData;
     }
 
     public function saveOystConfig(\Oyst\OneClick\Api\Data\OystConfig\OystInterface $oystConfig)
     {
-        /* @var \Magento\Framework\App\Config\Value $backendModel */
-        $backendModel = $this->preparedValueFactory->create(
-            HelperConstants::CONFIG_PATH_OYST_CONFIG_SCRIPT_TAG, $oystConfig->getScriptTag(), 'default'
-        );
-        if ($backendModel instanceof \Magento\Framework\App\Config\Value) {
-            $resourceModel = $backendModel->getResource();
-            $resourceModel->save($backendModel);
+        try {
+            /* @var \Magento\Framework\App\Config\Value $backendModel */
+            $backendModel = $this->preparedValueFactory->create(
+                HelperConstants::CONFIG_PATH_OYST_CONFIG_SCRIPT_TAG, $oystConfig->getScriptTag(), 'default'
+            );
+            if ($backendModel instanceof \Magento\Framework\App\Config\Value) {
+                $resourceModel = $backendModel->getResource();
+                $resourceModel->save($backendModel);
+            }
+
+            $backendModel = $this->preparedValueFactory->create(
+                HelperConstants::CONFIG_PATH_OYST_CONFIG_MERCHANT_ID, $oystConfig->getMerchantId(), 'default'
+            );
+            if ($backendModel instanceof \Magento\Framework\App\Config\Value) {
+                $resourceModel = $backendModel->getResource();
+                $resourceModel->save($backendModel);
+            }
+
+            $endpoints = [];
+            foreach($oystConfig->getEndpoints() as $endpoint) {
+                $endpoints[] = [
+                    'url' => $endpoint->getUrl(),
+                    'type' => $endpoint->getType(),
+                    'api_key' => $endpoint->getApiKey(),
+                ];
+            }
+
+            $backendModel = $this->preparedValueFactory->create(
+                HelperConstants::CONFIG_PATH_OYST_CONFIG_ENDPOINTS, json_encode($endpoints), 'default'
+            );
+            if ($backendModel instanceof \Magento\Framework\App\Config\Value) {
+                $resourceModel = $backendModel->getResource();
+                $resourceModel->save($backendModel);
+            }
+
+            $this->cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
+
+            return true;
+        } catch (\Exception $e) {
+            $this->helperData->handleExceptionForWebapi($e);
         }
-
-        $backendModel = $this->preparedValueFactory->create(
-            HelperConstants::CONFIG_PATH_OYST_CONFIG_MERCHANT_ID, $oystConfig->getMerchantId(), 'default'
-        );
-        if ($backendModel instanceof \Magento\Framework\App\Config\Value) {
-            $resourceModel = $backendModel->getResource();
-            $resourceModel->save($backendModel);
-        }
-
-        $endpoints = [];
-        foreach($oystConfig->getEndpoints() as $endpoint) {
-            $endpoints[] = [
-                'url' => $endpoint->getUrl(),
-                'type' => $endpoint->getType(),
-                'api_key' => $endpoint->getApiKey(),
-            ];
-        }
-
-        $backendModel = $this->preparedValueFactory->create(
-            HelperConstants::CONFIG_PATH_OYST_CONFIG_ENDPOINTS, json_encode($endpoints), 'default'
-        );
-        if ($backendModel instanceof \Magento\Framework\App\Config\Value) {
-            $resourceModel = $backendModel->getResource();
-            $resourceModel->save($backendModel);
-        }
-
-        $this->cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
-
-        return true;
     }
 
     public function getEcommerceConfig()
     {
-        $carriers = $this->configShippingMethods->toOptionArray(true);
-        array_shift($carriers);
+        try {
+            $carriers = $this->configShippingMethods->toOptionArray(true);
+            array_shift($carriers);
 
-        $allowedCountryCodes = $this->configAllowedCountries->getAllowedCountries();
-        $countries = $this->countryCollectionFactory->create()->addCountryCodeFilter($allowedCountryCodes)->toOptionArray();
-        array_shift($countries);
+            $allowedCountryCodes = $this->configAllowedCountries->getAllowedCountries();
+            $countries = $this->countryCollectionFactory->create()->addCountryCodeFilter($allowedCountryCodes)->toOptionArray();
+            array_shift($countries);
 
-        $orderStatuses = $this->orderConfig->getStatuses();
+            $orderStatuses = $this->orderConfig->getStatuses();
 
-        return $this->oystConfigEcommerceBuilder->buildOystConfigEcommerce(
-            $carriers,
-            $countries,
-            $orderStatuses
-        );
+            return $this->oystConfigEcommerceBuilder->buildOystConfigEcommerce(
+                $carriers,
+                $countries,
+                $orderStatuses
+            );
+        } catch (\Exception $e) {
+            $this->helperData->handleExceptionForWebapi($e);
+        }
     }
 }
 

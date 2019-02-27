@@ -12,14 +12,11 @@ class OystOrderManagement extends AbstractOystManagement implements \Oyst\OneCli
 
     protected $oystPaymentManagement;
 
-    protected $helperData;
-
     public function __construct(
         \Oyst\OneClick\Model\OystPaymentManagement $oystPaymentManagement,
         \Magento\Quote\Api\CartManagementInterface $cartManagement,
         \Oyst\OneClick\Model\OystOrder\Builder $oystOrderBuilder,
         \Magento\Sales\Model\ResourceModel\Order\CollectionFactory $orderCollectionFactory,
-        \Oyst\OneClick\Helper\Data $helperData,
         \Magento\Sales\Api\OrderManagementInterface $orderManagement,
         \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
         \Magento\Customer\Api\Data\CustomerInterfaceFactory $customerDataFactory,
@@ -31,14 +28,14 @@ class OystOrderManagement extends AbstractOystManagement implements \Oyst\OneCli
         \Magento\Store\Model\App\Emulation $appEmulation,
         \Magento\Framework\Event\ManagerInterface $eventManager,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Newsletter\Model\SubscriberFactory $newsletterSubscriberFactory
+        \Magento\Newsletter\Model\SubscriberFactory $newsletterSubscriberFactory,
+        \Oyst\OneClick\Helper\Data $helperData
     )
     {
         $this->cartManagement = $cartManagement;
         $this->orderManagement = $orderManagement;
         $this->oystOrderBuilder = $oystOrderBuilder;
         $this->oystPaymentManagement = $oystPaymentManagement;
-        $this->helperData = $helperData;
         parent::__construct(
             $customerRepository,
             $customerDataFactory,
@@ -51,69 +48,82 @@ class OystOrderManagement extends AbstractOystManagement implements \Oyst\OneCli
             $appEmulation,
             $eventManager,
             $scopeConfig,
-            $newsletterSubscriberFactory
+            $newsletterSubscriberFactory,
+            $helperData
         );
     }
 
     public function createMagentoOrderFromOystOrder(\Oyst\OneClick\Api\Data\OystOrderInterface $oystOrder)
     {
-        $quote = $this->getMagentoQuoteByOystId($oystOrder->getOystId());
+        try {
+            $quote = $this->getMagentoQuoteByOystId($oystOrder->getOystId());
 
-        if (!$quote->getId()) {
-            throw new \Exception('Quote is not available.');
+            if (!$quote->getId()) {
+                throw new \Exception('Quote is not available.');
+            }
+
+            $this->helperData->addQuoteExtraData(
+                $quote, 'newsletter_optin', $oystOrder->getUser()->getNewsletter()
+            );
+            $quote->save();
+
+            $this->cartManagement->placeOrder($quote->getId());
+
+            return $this->getOystOrderFromMagentoOrder($oystOrder->getOystId());
+        } catch (\Exception $e) {
+            $this->helperData->handleExceptionForWebapi($e);
         }
-
-        $this->helperData->addQuoteExtraData(
-            $quote, 'newsletter_optin', $oystOrder->getUser()->getNewsletter()
-        );
-        $quote->save();
-
-        $this->cartManagement->placeOrder($quote->getId());
-
-        return $this->getOystOrderFromMagentoOrder($oystOrder->getOystId());
     }
 
     public function getOystOrderFromMagentoOrder($oystId)
     {
-        $order = $this->getMagentoOrderByOystId($oystId);
+        try {
+            $order = $this->getMagentoOrderByOystId($oystId);
 
-        if (!$order->getId()
-         || $order->getPayment()->getMethod() != \Oyst\OneClick\Model\Payment\Method\OneClick::PAYMENT_METHOD_OYST_ONECLICK_CODE) {
-            throw new \Exception('Order is not available.');
+            if (!$order->getId()
+             || $order->getPayment()->getMethod() != \Oyst\OneClick\Model\Payment\Method\OneClick::PAYMENT_METHOD_OYST_ONECLICK_CODE) {
+                throw new \Exception('Order is not available.');
+            }
+
+            return $this->oystOrderBuilder->buildOystOrder($order);
+        } catch (\Exception $e) {
+            $this->helperData->handleExceptionForWebapi($e);
         }
-
-        return $this->oystOrderBuilder->buildOystOrder($order);
     }
 
     public function syncMagentoOrderWithOystOrderStatus($oystId, \Oyst\OneClick\Api\Data\OystOrderInterface $oystOrder)
     {
-        $order = $this->getMagentoOrderByOystId($oystId);
+        try {
+            $order = $this->getMagentoOrderByOystId($oystId);
 
-        if (!$order->getId()
-         || $order->getPayment()->getMethod() != \Oyst\OneClick\Model\Payment\Method\OneClick::PAYMENT_METHOD_OYST_ONECLICK_CODE) {
-            throw new \Exception('Order is not available.');
-        }
-
-        if ($oystOrder->getStatus()->getCode() == \Oyst\OneClick\Helper\Constants::OYST_API_ORDER_STATUS_CANCELED) {
-            $cancelResult = $this->orderManagement->cancel($order->getId());
-
-            if (!$cancelResult) {
-                // TODO
+            if (!$order->getId()
+             || $order->getPayment()->getMethod() != \Oyst\OneClick\Model\Payment\Method\OneClick::PAYMENT_METHOD_OYST_ONECLICK_CODE) {
+                throw new \Exception('Order is not available.');
             }
-        } elseif ($oystOrder->getStatus()->getCode() == \Oyst\OneClick\Helper\Constants::OYST_API_ORDER_STATUS_PAYMENT_CAPTURED) {
-            $this->oystPaymentManagement->handleMagentoOrderPaymentCaptured($order, $oystOrder);
-            $order->save();
-            // TODO send invoice email
-        } elseif ($oystOrder->getStatus()->getCode() == \Oyst\OneClick\Helper\Constants::OYST_API_ORDER_STATUS_PAYMENT_WAITING_TO_CAPTURE) {
-            $this->orderManagement->setState(
-                $order, \Magento\Sales\Model\Order::STATE_PROCESSING, \Oyst\OneClick\Helper\Constants::OYST_ORDER_STATUS_PAYMENT_WAITING_TO_CAPTURE, '', null, false
-            );
 
-            $order->save();
-        } else {
-            throw new \Exception('Non handled status : '.$oystOrder->getStatus()->getCode());
+            if ($oystOrder->getStatus()->getCode() == \Oyst\OneClick\Helper\Constants::OYST_API_ORDER_STATUS_CANCELED) {
+                $cancelResult = $this->orderManagement->cancel($order->getId());
+
+                if (!$cancelResult) {
+                    // TODO
+                }
+            } elseif ($oystOrder->getStatus()->getCode() == \Oyst\OneClick\Helper\Constants::OYST_API_ORDER_STATUS_PAYMENT_CAPTURED) {
+                $this->oystPaymentManagement->handleMagentoOrderPaymentCaptured($order, $oystOrder);
+                $order->save();
+                // TODO send invoice email
+            } elseif ($oystOrder->getStatus()->getCode() == \Oyst\OneClick\Helper\Constants::OYST_API_ORDER_STATUS_PAYMENT_WAITING_TO_CAPTURE) {
+                $this->orderManagement->setState(
+                    $order, \Magento\Sales\Model\Order::STATE_PROCESSING, \Oyst\OneClick\Helper\Constants::OYST_ORDER_STATUS_PAYMENT_WAITING_TO_CAPTURE, '', null, false
+                );
+
+                $order->save();
+            } else {
+                throw new \Exception('Non handled status : '.$oystOrder->getStatus()->getCode());
+            }
+
+            return $this->oystOrderBuilder->buildOystOrder($order);
+        } catch (\Exception $e) {
+            $this->helperData->handleExceptionForWebapi($e);
         }
-
-        return $this->oystOrderBuilder->buildOystOrder($order);
     }
 }

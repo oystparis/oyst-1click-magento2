@@ -46,7 +46,8 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
         \Magento\Store\Model\App\Emulation $appEmulation,
         \Magento\Framework\Event\ManagerInterface $eventManager,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Newsletter\Model\SubscriberFactory $newsletterSubscriberFactory
+        \Magento\Newsletter\Model\SubscriberFactory $newsletterSubscriberFactory,
+        \Oyst\OneClick\Helper\Data $helperData
     )
     {
         $this->quoteRepository = $quoteRepository;
@@ -66,49 +67,58 @@ class OystCheckoutManagement extends AbstractOystManagement implements \Oyst\One
             $appEmulation,
             $eventManager,
             $scopeConfig,
-            $newsletterSubscriberFactory
+            $newsletterSubscriberFactory,
+            $helperData
         );
     }
 
     public function getOystCheckoutFromMagentoQuote($id)
     {
-        $quote = $this->coreRegistry->registry('oyst_oneclick_current_quote');
-        if (empty($quote) || $quote->getId() != $id) {
-            $quote = $this->quoteRepository->getActive($id);
-        }
-        $totals = $this->cartTotalRepository->get($id);
-        $shippingMethods = $this->getShippingMethodList($quote);
-        $products = $this->getMagentoProductsById(
-            array_map(function($item) {return $item->getProductId();}, $quote->getAllItems()),
-            $quote->getStoreId()
-        );
-        $this->addNewsletterSubscriberToCustomer($quote->getCustomer());
+        try {
+            $quote = $this->coreRegistry->registry('oyst_oneclick_current_quote');
+            if (empty($quote) || $quote->getId() != $id) {
+                $quote = $this->quoteRepository->getActive($id);
+            }
+            $totals = $this->cartTotalRepository->get($id);
+            $shippingMethods = $this->getShippingMethodList($quote);
+            $products = $this->getMagentoProductsById(
+                array_map(function($item) {return $item->getProductId();}, $quote->getAllItems()),
+                $quote->getStoreId()
+            );
+            $this->addNewsletterSubscriberToCustomer($quote->getCustomer());
 
-        return $this->oystCheckoutBuilder->buildOystCheckout($quote, $totals, $shippingMethods, $products);
+            return $this->oystCheckoutBuilder->buildOystCheckout($quote, $totals, $shippingMethods, $products);
+        } catch (\Exception $e) {
+            $this->helperData->handleExceptionForWebapi($e);
+        }
     }
 
     public function syncMagentoQuoteWithOystCheckout($oystId, \Oyst\OneClick\Api\Data\OystCheckoutInterface $oystCheckout)
     {
-        /* @var \Magento\Quote\Model\Quote $quote */
-        $quote = $this->quoteRepository->getActive($oystCheckout->getInternalId());
-        /* @var \Magento\Customer\Api\Data\CustomerInterface $customer */
-        $customer = $this->getMagentoCustomer($oystCheckout->getUser()->getEmail());
-        /* @var \Magento\SalesRule\Model\Coupon $coupon */
-        $coupon = $this->getMagentoCoupon($oystCheckout->getCoupons());
-        $this->magentoQuoteSynchronizer->syncMagentoQuote($oystCheckout, $quote, $customer, $coupon);
+        try {
+            /* @var \Magento\Quote\Model\Quote $quote */
+            $quote = $this->quoteRepository->getActive($oystCheckout->getInternalId());
+            /* @var \Magento\Customer\Api\Data\CustomerInterface $customer */
+            $customer = $this->getMagentoCustomer($oystCheckout->getUser()->getEmail());
+            /* @var \Magento\SalesRule\Model\Coupon $coupon */
+            $coupon = $this->getMagentoCoupon($oystCheckout->getCoupons());
+            $this->magentoQuoteSynchronizer->syncMagentoQuote($oystCheckout, $quote, $customer, $coupon);
 
-        if(!$quote->isVirtual()) {
+            if(!$quote->isVirtual()) {
+                $quote->setTotalsCollectedFlag(false)->collectTotals();
+                /* @var array $methodsAvailable */
+                $methodsAvailable = $this->getShippingMethodList($quote);
+                $this->resolveSetShippingMethodStrategy($quote->getShippingAddress(), $methodsAvailable, $oystCheckout->getShipping());
+            }
+
             $quote->setTotalsCollectedFlag(false)->collectTotals();
-            /* @var array $methodsAvailable */
-            $methodsAvailable = $this->getShippingMethodList($quote);
-            $this->resolveSetShippingMethodStrategy($quote->getShippingAddress(), $methodsAvailable, $oystCheckout->getShipping());
+            $this->quoteRepository->save($quote);
+            $this->coreRegistry->register('oyst_oneclick_current_quote', $quote, true);
+
+            return $this->getOystCheckoutFromMagentoQuote($quote->getId());
+        } catch (\Exception $e) {
+            $this->helperData->handleExceptionForWebapi($e);
         }
-
-        $quote->setTotalsCollectedFlag(false)->collectTotals();
-        $this->quoteRepository->save($quote);
-        $this->coreRegistry->register('oyst_oneclick_current_quote', $quote, true);
-
-        return $this->getOystCheckoutFromMagentoQuote($quote->getId());
     }
 
     /**

@@ -64,6 +64,11 @@ abstract class AbstractOystManagement
      */
     protected $newsletterSubscriberFactory;
 
+    /**
+     * @var \Oyst\OneClick\Helper\Data
+     */
+    protected $helperData;
+
     public function __construct(
         \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
         \Magento\Customer\Api\Data\CustomerInterfaceFactory $customerDataFactory,
@@ -76,7 +81,8 @@ abstract class AbstractOystManagement
         \Magento\Store\Model\App\Emulation $appEmulation,
         \Magento\Framework\Event\ManagerInterface $eventManager,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Newsletter\Model\SubscriberFactory $newsletterSubscriberFactory
+        \Magento\Newsletter\Model\SubscriberFactory $newsletterSubscriberFactory,
+        \Oyst\OneClick\Helper\Data $helperData
     )
     {
         $this->customerRepository = $customerRepository;
@@ -91,6 +97,7 @@ abstract class AbstractOystManagement
         $this->eventManager = $eventManager;
         $this->scopeConfig = $scopeConfig;
         $this->newsletterSubscriberFactory = $newsletterSubscriberFactory;
+        $this->helperData = $helperData;
         $this->disableRegionRequired();
     }
 

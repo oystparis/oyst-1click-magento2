@@ -19,7 +19,8 @@ class OystRefundManagement extends AbstractOystManagement implements \Oyst\OneCl
         \Magento\Store\Model\App\Emulation $appEmulation, 
         \Magento\Framework\Event\ManagerInterface $eventManager, 
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Newsletter\Model\SubscriberFactory $newsletterSubscriberFactory
+        \Magento\Newsletter\Model\SubscriberFactory $newsletterSubscriberFactory,
+        \Oyst\OneClick\Helper\Data $helperData
     )
     {
         $this->oystPaymentManagement = $oystPaymentManagement;
@@ -35,16 +36,21 @@ class OystRefundManagement extends AbstractOystManagement implements \Oyst\OneCl
             $appEmulation, 
             $eventManager, 
             $scopeConfig,
-            $newsletterSubscriberFactory
+            $newsletterSubscriberFactory,
+            $helperData
         );
     }
     
     public function createMagentoCreditmemo($oystId, \Oyst\OneClick\Api\Data\OystRefundInterface $oystRefund)
     {
-        $order = $this->getMagentoOrderByOystId($oystId);
+        try {
+            $order = $this->getMagentoOrderByOystId($oystId);
 
-        $this->oystPaymentManagement->handleMagentoOrdersToRefund([$order->getId()]);
+            $this->oystPaymentManagement->handleMagentoOrdersToRefund([$order->getId()]);
 
-        return true;
+            return true;
+        } catch (\Exception $e) {
+            $this->helperData->handleExceptionForWebapi($e);
+        }
     }
 }

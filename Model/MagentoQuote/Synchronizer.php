@@ -13,7 +13,7 @@ class Synchronizer
      * @var \Magento\Checkout\Model\Session
      */
     protected $checkoutSession;
-    
+
     /**
      * @var \Magento\Framework\Event\ManagerInterface
      */
@@ -24,17 +24,24 @@ class Synchronizer
      */
     protected $paymentFactory;
 
+    /**
+     * @var \Oyst\OneClick\Helper\Data
+     */
+    protected $helperData;
+
     public function __construct(
         \Magento\Checkout\Model\Cart $cart,
         \Magento\Checkout\Model\Session $checkoutSession,
         \Magento\Framework\Event\ManagerInterface $eventManager,
-        \Magento\Quote\Api\Data\PaymentInterfaceFactory $paymentFactory
+        \Magento\Quote\Api\Data\PaymentInterfaceFactory $paymentFactory,
+        \Oyst\OneClick\Helper\Data $helperData
     )
     {
         $this->cart = $cart;
         $this->checkoutSession = $checkoutSession;
         $this->eventManager = $eventManager;
         $this->paymentFactory = $paymentFactory;
+        $this->helperData = $helperData;
     }
 
     public function syncMagentoQuote(
@@ -82,6 +89,7 @@ class Synchronizer
 
         $cartData = $this->cart->suggestItemsQty($cartData);
         $this->cart->updateItems($cartData);
+        $this->helperData->handleQuoteErrors($this->cart->getQuote());
 
         return true;
     }

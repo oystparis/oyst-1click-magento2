@@ -43,4 +43,16 @@ class Data
         $extraData = json_decode($salesObject->getOystExtraData(), true);
         return isset($extraData[$key]) ? $extraData[$key] : null;
     }
+
+    public function handleQuoteErrors(\Magento\Quote\Model\Quote $quote)
+    {
+        if ($quote->getHasError()) {
+            $errorMessages = array();
+            foreach ($quote->getErrors() as $error) {
+                $errorMessages[] = $error->getCode();
+            }
+            throw new \Exception(implode('\n', $errorMessages));
+        }
+        return $this;
+    }
 }

@@ -67,8 +67,8 @@ class Redirect extends \Magento\Framework\App\Action\Action
         $this->checkoutSession->setLastRealOrderId($order->getIncrementId());
         $this->checkoutSession->setLastOrderStatus($order->getStatus());
 
-        $this->handleDeactivateQuote($quote);
         $this->handleCustomerRedirectFromOrder($order);
+        $this->handleDeactivateQuote($quote);
         $this->handleSendNewOrderEmail($order);
 
         $resultRedirect = $this->resultRedirectFactory->create();

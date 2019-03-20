@@ -39,7 +39,7 @@ class Constants
     const DISABLE_REGION_REQUIRED_REGISTRY_KEY = 'oyst_oneclick_disable_region_required';
     const WEBAPI_ERROR_REGISTRY_KEY = 'oyst_oneclick_webapi_error';
 
-    const WEBAPI_TYPE_ERROR = 'M2 Oyst Error';
+    const WEBAPI_ERROR_PLATFORM = 'MAGENTO2';
     
     const MERCHANT_ID_PLACEHOLDER = '[MERCHANT_ID_PLACEHOLDER]';
 }

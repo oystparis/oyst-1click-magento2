@@ -6,11 +6,15 @@ class Data
 {
     protected $coreRegistry;
 
+    protected $scopeConfig;
+
     public function __construct(
-        \Magento\Framework\Registry $coreRegistry
+        \Magento\Framework\Registry $coreRegistry,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     )
     {
         $this->coreRegistry = $coreRegistry;
+        $this->scopeConfig = $scopeConfig;
     }
 
     public function handleExceptionForWebapi(\Exception $e)
@@ -18,7 +22,8 @@ class Data
         $this->coreRegistry->register(
             \Oyst\OneClick\Helper\Constants::WEBAPI_ERROR_REGISTRY_KEY,
             [
-                'type' => \Oyst\OneClick\Helper\Constants::WEBAPI_TYPE_ERROR,
+                'platform' => \Oyst\OneClick\Helper\Constants::WEBAPI_ERROR_PLATFORM,
+                'code' => $e->getCode(),
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]
@@ -53,6 +58,30 @@ class Data
             }
             throw new \Exception(implode('\n', $errorMessages));
         }
+        return $this;
+    }
+
+    public function mapMagentoExceptionCodeToOystErrorCode($exceptionCode)
+    {
+        switch($exceptionCode) {
+            case 1:
+                return 'unhandled-address';
+            default:
+                return 'generic-error';
+        }
+    }
+
+    public function validateAddress(\Magento\Customer\Model\Address\AbstractAddress $address, $store = null)
+    {
+        if (($validateRes = $address->validate()) !== true) {
+            throw new \Exception(implode('\n', $validateRes));
+        }
+
+        $allowCountries = explode(',', (string)$this->scopeConfig->getValue('general/country/allow'));
+        if (!in_array($address->getCountryId(), $allowCountries)) {
+            throw new \Exception('', 1);
+        }
+
         return $this;
     }
 }

@@ -17,6 +17,8 @@ class OneClick extends \Magento\Payment\Model\Method\AbstractMethod
 
     protected $_canRefundInvoicePartial = true;
 
+    protected $_canUseCheckout = false;
+
     protected $oystPaymentManagement;
 
     public function __construct(

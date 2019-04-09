@@ -33,5 +33,15 @@ class Ecommerce extends \Magento\Framework\Api\AbstractSimpleObject implements \
     {
         return $this->setData(self::ORDER_STATUSES , $orderStatuses);
     }
+
+    public function getShops()
+    {
+        return $this->_get(self::SHOPS);
+    }
+
+    public function setShops($shops)
+    {
+        return $this->setData(self::SHOPS , $shops);
+    }
 }
 

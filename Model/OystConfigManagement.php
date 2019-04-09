@@ -46,6 +46,11 @@ class OystConfigManagement implements \Oyst\OneClick\Api\OystConfigManagementInt
      */
     protected $helperData;
 
+    /**
+     * @var \Magento\Store\Model\StoreManager
+     */
+    protected $storeManager;
+
     public function __construct(
         \Magento\Config\Model\PreparedValueFactory $preparedValueFactory,
         \Magento\Framework\App\Cache\Manager $cacheManager,
@@ -54,7 +59,8 @@ class OystConfigManagement implements \Oyst\OneClick\Api\OystConfigManagementInt
         \Magento\Directory\Model\AllowedCountries $configAllowedCountries,
         \Magento\Directory\Model\ResourceModel\Country\CollectionFactory $countryCollectionFactory,
         \Magento\Sales\Model\Order\Config $orderConfig,
-        \Oyst\OneClick\Helper\Data $helperData
+        \Oyst\OneClick\Helper\Data $helperData,
+        \Magento\Store\Model\StoreManager $storeManager
     )
     {
         $this->preparedValueFactory = $preparedValueFactory;
@@ -65,6 +71,7 @@ class OystConfigManagement implements \Oyst\OneClick\Api\OystConfigManagementInt
         $this->countryCollectionFactory = $countryCollectionFactory;
         $this->orderConfig = $orderConfig;
         $this->helperData = $helperData;
+        $this->storeManager = $storeManager;
     }
 
     public function saveOystConfig(\Oyst\OneClick\Api\Data\OystConfig\OystInterface $oystConfig)
@@ -124,10 +131,13 @@ class OystConfigManagement implements \Oyst\OneClick\Api\OystConfigManagementInt
 
             $orderStatuses = $this->orderConfig->getStatuses();
 
+            $stores = $this->storeManager->getStores(true);
+
             return $this->oystConfigEcommerceBuilder->buildOystConfigEcommerce(
                 $carriers,
                 $countries,
-                $orderStatuses
+                $orderStatuses,
+                $stores
             );
         } catch (\Exception $e) {
             $this->helperData->handleExceptionForWebapi($e);

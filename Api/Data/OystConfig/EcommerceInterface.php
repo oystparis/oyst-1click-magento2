@@ -15,6 +15,7 @@ interface EcommerceInterface
     const SHIPPING_METHODS = 'shipping_methods';
     const COUNTRIES = 'countries';
     const ORDER_STATUSES = 'order_statuses';
+    const SHOPS = 'shops';
 
     /**#@-*/
 
@@ -50,4 +51,15 @@ interface EcommerceInterface
      * @return $this
      */
     public function setOrderStatuses($orderStatuses);
+
+    /**
+     * @return \Oyst\OneClick\Api\Data\Common\ShopInterface[]|null
+     */
+    public function getShops();
+
+    /**
+     * @param \Oyst\OneClick\Api\Data\Common\ShopInterface[] $shops
+     * @return $this
+     */
+    public function setShops($shops);
 }

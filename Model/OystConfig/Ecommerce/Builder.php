@@ -12,23 +12,28 @@ class Builder
 
     protected $oystCommonOrderStatusFactory;
 
+    protected $oystCommonShopFactory;
+
     public function __construct(
         \Oyst\OneClick\Api\Data\OystConfig\EcommerceInterfaceFactory $oystConfigEcommerceFactory,
         \Oyst\OneClick\Api\Data\Common\ShippingMethodInterfaceFactory $oystCommonShippingMethodFactory,
         \Oyst\OneClick\Api\Data\Common\CountryInterfaceFactory $oystCommonCountryFactory,
-        \Oyst\OneClick\Api\Data\Common\OrderStatusInterfaceFactory $oystCommonOrderStatusFactory
+        \Oyst\OneClick\Api\Data\Common\OrderStatusInterfaceFactory $oystCommonOrderStatusFactory,
+        \Oyst\OneClick\Api\Data\Common\ShopInterfaceFactory $oystCommonShopFactory
     )
     {
         $this->oystConfigEcommerceFactory = $oystConfigEcommerceFactory;
         $this->oystCommonShippingMethodFactory = $oystCommonShippingMethodFactory;
         $this->oystCommonCountryFactory = $oystCommonCountryFactory;
         $this->oystCommonOrderStatusFactory = $oystCommonOrderStatusFactory;
+        $this->oystCommonShopFactory = $oystCommonShopFactory;
     }
 
     public function buildOystConfigEcommerce(
         array $carriers,
         array $countries,
-        array $orderStatuses
+        array $orderStatuses,
+        array $stores
     )
     {
         /* @var $oystConfigEcommerce \Oyst\OneClick\Api\Data\OystConfig\EcommerceInterface */
@@ -37,6 +42,7 @@ class Builder
         $oystConfigEcommerce->setShippingMethods($this->buildOystConfigEcommerceShippingMethods($carriers));
         $oystConfigEcommerce->setCountries($this->buildOystConfigEcommerceCountries($countries));
         $oystConfigEcommerce->setOrderStatuses($this->buildOystConfigEcommerceOrderStatuses($orderStatuses));
+        $oystConfigEcommerce->setShops($this->buildOystConfigEcommerceShops($stores));
 
         return $oystConfigEcommerce;
     }
@@ -89,6 +95,24 @@ class Builder
             $oystConfigEcommerceOrderStatus->setCode($key);
 
             $result[] = $oystConfigEcommerceOrderStatus;
+        }
+
+        return $result;
+    }
+
+    protected function buildOystConfigEcommerceShops(array $stores)
+    {
+        $result = [];
+
+        foreach ($stores as $store) {
+            /* @var $oystConfigEcommerceShop \Oyst\OneClick\Api\Data\Common\ShopInterface */
+            $oystConfigEcommerceShop = $this->oystCommonShopFactory->create();
+
+            $oystConfigEcommerceShop->setCode($store->getCode());
+            $oystConfigEcommerceShop->setLabel($store->getName());
+            $oystConfigEcommerceShop->setUrl($store->getBaseUrl());
+
+            $result[] = $oystConfigEcommerceShop;
         }
 
         return $result;

@@ -17,6 +17,7 @@ interface ShippingMethodInterface
     const DELIVERY_DELAY = 'delivery_delay';
     const AMOUNT_TAX_EXCL = 'amount_tax_excl';
     const AMOUNT_TAX_INCL = 'amount_tax_incl';
+    const TYPE = 'type';
 
     /**#@-*/
 
@@ -74,4 +75,15 @@ interface ShippingMethodInterface
      * @return $this
      */
     public function setAmountTaxIncl($amountTaxIncl);
+
+    /**
+     * @return string
+     */
+    public function getType();
+
+    /**
+     * @param string $label
+     * @return $this
+     */
+    public function setType($type);
 }

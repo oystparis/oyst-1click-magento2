@@ -19,15 +19,7 @@ class Data
 
     public function handleExceptionForWebapi(\Exception $e)
     {
-        $this->coreRegistry->register(
-            \Oyst\OneClick\Helper\Constants::WEBAPI_ERROR_REGISTRY_KEY,
-            [
-                'platform' => \Oyst\OneClick\Helper\Constants::WEBAPI_ERROR_PLATFORM,
-                'code' => $e->getCode(),
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]
-        );
+        throw $e;
     }
 
     public function addQuoteExtraData(\Magento\Quote\Model\Quote $quote, $key, $value)
@@ -83,5 +75,10 @@ class Data
         }
 
         return $this;
+    }
+    
+    public function isWebApiRequestConcernOystOneClick(\Magento\Framework\Webapi\Request $request)
+    {
+        return strpos($request->getRequestUri(), \Oyst\OneClick\Helper\Constants::WEBAPI_REQUEST_PATTERN) !== false; 
     }
 }

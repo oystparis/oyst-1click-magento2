@@ -53,4 +53,14 @@ class ShippingMethod extends \Magento\Framework\Api\AbstractSimpleObject impleme
     {
         return $this->setData(self::AMOUNT_TAX_INCL , $amountTaxIncl);
     }
+
+    public function getType()
+    {
+        return $this->_get(self::TYPE);
+    }
+
+    public function setType($type)
+    {
+        return $this->setData(self::TYPE , $type);
+    }
 }

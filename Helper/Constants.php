@@ -5,7 +5,7 @@ namespace Oyst\OneClick\Helper;
 class Constants
 {
     const MODULE_NAME = 'Oyst_OneClick';
-    
+
     const ITEM_TYPE_SIMPLE = 'simple';
     const ITEM_TYPE_VIRTUAL = 'virtual';
     const ITEM_TYPE_VARIANT = 'variant';
@@ -18,7 +18,7 @@ class Constants
 
     const OYST_GATEWAY_ENDPOINT_TYPE_CAPTURE = 'capture';
     const OYST_GATEWAY_ENDPOINT_TYPE_REFUND = 'refund';
-    
+
     const OYST_API_ORDER_STATUS_CANCELED = 'oyst_canceled';
     const OYST_API_ORDER_STATUS_PAYMENT_CAPTURED = 'oyst_payment_captured';
     const OYST_API_ORDER_STATUS_PAYMENT_WAITING_TO_CAPTURE = 'oyst_payment_waiting_to_capture';
@@ -37,9 +37,10 @@ class Constants
     const INTEGRATION_NAME = 'Oyst OneClick';
 
     const DISABLE_REGION_REQUIRED_REGISTRY_KEY = 'oyst_oneclick_disable_region_required';
-    const WEBAPI_ERROR_REGISTRY_KEY = 'oyst_oneclick_webapi_error';
 
     const WEBAPI_ERROR_PLATFORM = 'MAGENTO2';
-    
+
     const MERCHANT_ID_PLACEHOLDER = '[MERCHANT_ID_PLACEHOLDER]';
+
+    const WEBAPI_REQUEST_PATTERN = 'oyst-oneclick';
 }

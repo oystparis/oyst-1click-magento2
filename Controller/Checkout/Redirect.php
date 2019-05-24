@@ -57,9 +57,16 @@ class Redirect extends \Magento\Framework\App\Action\Action
 
     public function execute()
     {
+        $resultRedirect = $this->resultRedirectFactory->create();
         $quoteId = $this->checkoutSession->getOystOneClickQuoteId(true);
         $quote = $this->quoteRepository->getActive($quoteId);
         $order = $this->oystOrderManagement->getMagentoOrderByQuoteId($quote->getId());
+
+        if (!$order->getId()) {
+            $this->messageManager->addErrorMessage(__('Order does not exists.'));
+            $resultRedirect->setPath('checkout/cart');
+            return $resultRedirect;
+        }
 
         $this->checkoutSession->setLastQuoteId($quoteId);
         $this->checkoutSession->setLastSuccessQuoteId($quoteId);
@@ -71,7 +78,6 @@ class Redirect extends \Magento\Framework\App\Action\Action
         $this->handleDeactivateQuote($quote);
         $this->handleSendNewOrderEmail($order);
 
-        $resultRedirect = $this->resultRedirectFactory->create();
         $resultRedirect->setPath('checkout/onepage/success');
         return $resultRedirect;
     }

@@ -157,7 +157,7 @@ abstract class AbstractOystManagement
             foreach ($oystCoupons as $oystCoupon) {
                 $coupon = $this->couponFactory->create()->load($oystCoupon->getCode(), 'code');
                 if (!$coupon->getId()) {
-                    throw new \Exception('Invalid coupon code : '.$oystCoupon->getCode());
+                    throw new \Exception('Invalid coupon code : '.$oystCoupon->getCode(), 2);
                 }
                 return $coupon;
             }

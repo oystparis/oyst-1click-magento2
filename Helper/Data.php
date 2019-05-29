@@ -56,6 +56,10 @@ class Data
     public function mapMagentoExceptionCodeToOystErrorCode($exceptionCode)
     {
         switch($exceptionCode) {
+            case 3:
+                return 'address-validation-failed';
+            case 2:
+                return 'coupon-error';
             case 1:
                 return 'unhandled-address';
             default:
@@ -66,7 +70,7 @@ class Data
     public function validateAddress(\Magento\Customer\Model\Address\AbstractAddress $address, $store = null)
     {
         if (($validateRes = $address->validate()) !== true) {
-            throw new \Exception(implode('\n', $validateRes));
+            throw new \Exception(implode('\n', $validateRes), 3);
         }
 
         $allowCountries = explode(',', (string)$this->scopeConfig->getValue('general/country/allow'));

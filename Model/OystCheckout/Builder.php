@@ -302,7 +302,8 @@ class Builder extends \Oyst\OneClick\Model\Common\AbstractBuilder
 
         $methodsAvailable = $oystCheckoutShipping->getMethodsAvailable();
         foreach ($methodsAvailable as $idx => $methodAvailable) {
-            if ($methodAvailable->getReference() == $oystCheckoutShipping->getMethodApplied()->getReference()) {
+            if ($oystCheckoutShipping->getMethodApplied() 
+             && $methodAvailable->getReference() == $oystCheckoutShipping->getMethodApplied()->getReference()) {
                 $methodsAvailable[$idx] = $oystCheckoutShipping->getMethodApplied();
             }
         }
